@@ -244,6 +244,7 @@ def stop():
 
 def start(b):
     global beds
+    global lapCounter
     beds = b
     ark.terminate(False)
     setStatusText("Starting. F2 to stop. Alt tab back into the game NOW.")

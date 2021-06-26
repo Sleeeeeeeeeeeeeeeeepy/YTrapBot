@@ -38,19 +38,20 @@
         },
         {
             "aberrationMode": false,
-            "bedX": 0,
-            "bedY": 0,
-            "crystalBeds": 1,
+            "bedX": 392,
+            "bedY": 509,
+            "crystalBeds": 4,
             "crystalInterval": 500,
             "dropGen2Suits": false,
             "keepItems": [
+                "fab",
                 "riot",
-                "fab"
+                "pump"
             ],
-            "name": "Test",
-            "seedBeds": 12,
+            "name": "Oil Cave",
+            "seedBeds": 24,
             "suicideBed": "suicide bed",
-            "suicideFrequency": 3,
+            "suicideFrequency": 1,
             "turnDirection": "left"
         }
     ]
