@@ -1,0 +1,54 @@
+{
+    "locations": [
+        {
+            "aberrationMode": false,
+            "bedX": 809,
+            "bedY": 548,
+            "crystalBeds": 1,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump"
+            ],
+            "name": "Spider Cave",
+            "seedBeds": 28,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 3
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 635,
+            "bedY": 311,
+            "crystalBeds": 1,
+            "crystalInterval": 500,
+            "dropGen2Suits": true,
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump"
+            ],
+            "name": "Vent",
+            "seedBeds": 10,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 5
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 0,
+            "bedY": 0,
+            "crystalBeds": 1,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "keepItems": [
+                "riot",
+                "fab"
+            ],
+            "name": "Test",
+            "seedBeds": 12,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 3
+        }
+    ]
+}
