@@ -1,0 +1,5 @@
+main.spec
+*.swp
+build
+dist
+__pycache__
