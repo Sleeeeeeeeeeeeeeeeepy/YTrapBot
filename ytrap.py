@@ -144,9 +144,9 @@ def loadGacha():
     ark.harvestCropStack("trap")
     pyautogui.press('c')
     if(beds["turnDirection"] == "left"):
-        ark.step('right', 1.0)
+        ark.step('right', 2.0)
     else:
-        ark.step('left', 1.0)
+        ark.step('left', 2.0)
 
     ark.lookUp()
     ark.lookDown()
