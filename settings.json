@@ -15,7 +15,8 @@
             "name": "Spider Cave",
             "seedBeds": 28,
             "suicideBed": "suicide bed",
-            "suicideFrequency": 3
+            "suicideFrequency": 3,
+            "turnDirection": "right"
         },
         {
             "aberrationMode": false,
@@ -32,7 +33,8 @@
             "name": "Vent",
             "seedBeds": 10,
             "suicideBed": "suicide bed",
-            "suicideFrequency": 5
+            "suicideFrequency": 5,
+            "turnDirection": "right"
         },
         {
             "aberrationMode": false,
@@ -48,7 +50,8 @@
             "name": "Test",
             "seedBeds": 12,
             "suicideBed": "suicide bed",
-            "suicideFrequency": 3
+            "suicideFrequency": 3,
+            "turnDirection": "left"
         }
     ]
 }

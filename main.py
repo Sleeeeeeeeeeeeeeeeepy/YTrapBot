@@ -63,6 +63,11 @@ def fillUI():
             else:
                 mapVariable.set("Other")
 
+            if(i["turnDirection"] == "left"):
+                cropVariable.set("Left")
+            else:
+                cropVariable.set("Right")
+
             defaultXEntry.delete(0, tk.END)
             defaultXEntry.insert(0, str(i["bedX"]))
 
@@ -120,7 +125,8 @@ def addLocation():
             "aberrationMode": False,
             "keepItems": ["fab", "riot", "pump"],
             "suicideBed": "suicide bed",
-            "suicideFrequency": 3
+            "suicideFrequency": 3,
+            "turnDirection": "left"
         })
         reloadLocations()
     else:
@@ -150,6 +156,15 @@ def onMapChange(*args):
     if(mapVariable.get() == "Other"):
         loc["aberrationMode"] = False
         loc["dropGen2Suits"] = False
+    saveJson()
+
+def onCropDirectionChange(*args):
+    loc = getThisLocation()
+    if(cropVariable.get() == "Left"):
+        loc["turnDirection"] = "left"
+    else:
+        loc["turnDirection"] = "right"
+    saveJson()    
 
 def onEntryChanged(*args):
     if(fillingUI == False):
@@ -278,6 +293,17 @@ gachaItemsSv = tk.StringVar()
 gachaItemsEntry = ttk.Entry(frame, textvariable=gachaItemsSv)
 gachaItemsEntry.pack(side=tk.LEFT)
 
+frame = ttk.Frame(r)
+frame.pack(fill=tk.X, expand=True)
+cropVariable = tk.StringVar(frame)
+cropVariable.set("Left") # default value
+
+label = ttk.Label(frame, text="Crop harvest turn direction")
+label.pack(side=tk.LEFT)
+cropMenu = ttk.OptionMenu(frame, cropVariable, "", "Left", "Right")
+cropMenu.pack(side=tk.LEFT)
+
+
 frame = ttk.Frame(r).pack(fill=tk.X, expand=True)
 statusLabel = ttk.Label(frame, text="Press F1 to start the bot")
 statusLabel.pack(side=tk.LEFT, fill=tk.X, expand=True)
@@ -286,6 +312,7 @@ fillUI()
 
 locationVariable.trace("w", locationChanged)
 mapVariable.trace("w", onMapChange)
+cropVariable.trace("w", onCropDirectionChange)
 
 defaultXSv.trace_add("write", onEntryChanged)
 defaultYSv.trace_add("write", onEntryChanged)
