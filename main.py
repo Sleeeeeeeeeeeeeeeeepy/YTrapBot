@@ -174,7 +174,13 @@ def onEntryChanged(*args):
         loc["crystalBeds"] = int(crystalBedsEntry.get())
         loc["seedBeds"] = int(seedBedsEntry.get())
         loc["crystalInterval"] = int(pickupIntervalEntry.get())
-        loc["keepItems"] = gachaItemsEntry.get().split(", ") 
+        gachaItems = gachaItemsEntry.get()
+        if(gachaItems == ""):
+            loc["keepItems"] = []
+        elif(gachaItems == "*"):
+            loc["keepItems"] = [""]
+        else:    
+            loc["keepItems"] = gachaItemsEntry.get().split(", ") 
         loc["suicideBed"] = suicideBedEntry.get()
         loc["suicideFrequency"] = int(suicideFrequencyEntry.get())
         saveJson()

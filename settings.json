@@ -8,9 +8,7 @@
             "crystalInterval": 500,
             "dropGen2Suits": false,
             "keepItems": [
-                "fab",
-                "riot",
-                "pump"
+                ""
             ],
             "name": "Spider Cave",
             "seedBeds": 28,
@@ -53,6 +51,25 @@
             "suicideBed": "suicide bed",
             "suicideFrequency": 1,
             "turnDirection": "left"
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 225,
+            "bedY": 320,
+            "crystalBeds": 2,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump",
+                "miner"
+            ],
+            "name": "Extinction Tree",
+            "seedBeds": 18,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 3,
+            "turnDirection": "right"
         }
     ]
 }

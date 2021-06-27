@@ -9,7 +9,15 @@ import screen
 
 crystal_template = cv2.imread("templates/gacha_crystal.png", cv2.IMREAD_GRAYSCALE)
 gen2suit_template = cv2.imread("templates/gen2suit.png", cv2.IMREAD_GRAYSCALE)
+deposit_all_template = cv2.imread("templates/deposit_all.png", cv2.IMREAD_COLOR)
 
+lower_cyan = np.array([90,255,255])
+upper_cyan = np.array([110,255,255])
+
+hsv = cv2.cvtColor(deposit_all_template, cv2.COLOR_BGR2HSV)
+mask = cv2.inRange(hsv, lower_cyan, upper_cyan)
+masked_template = cv2.bitwise_and(deposit_all_template, deposit_all_template, mask= mask)
+deposit_all_gray_template = cv2.cvtColor(masked_template, cv2.COLOR_BGR2GRAY)
 
 beds = {}
 
@@ -25,6 +33,21 @@ def setStatusText(txt):
 
 def setBeds(b):
     beds = b;
+
+def canDeposit():
+    roi = screen.getScreen()    
+    screen_hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(screen_hsv, lower_cyan, upper_cyan)
+    masked_screen = cv2.bitwise_and(roi, roi, mask= mask)
+    gray_screen = cv2.cvtColor(masked_screen, cv2.COLOR_BGR2GRAY)
+
+    res = cv2.matchTemplate(gray_screen, deposit_all_gray_template, cv2.TM_CCOEFF)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+
+    if(max_val > 14000000):
+        return True
+    return False
+
 
 def checkWeWearingSuit():
     roi = screen.getScreen()[150:440,740:1170]
@@ -208,6 +231,10 @@ def whipCrystals():
 
         pyautogui.press('c')
         ark.step('up', 0.9)
+
+        while(canDeposit() == False):
+            ark.step('w', 0.4)
+            ark.sleep(0.2)
         
         for i in range(8):
             pyautogui.press('e')
