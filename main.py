@@ -65,8 +65,10 @@ def fillUI():
 
             if(i["turnDirection"] == "left"):
                 cropVariable.set("Left")
-            else:
+            elif(i["turnDirection"] == "Right"):
                 cropVariable.set("Right")
+            else:
+                cropVariable.set("360")
 
             defaultXEntry.delete(0, tk.END)
             defaultXEntry.insert(0, str(i["bedX"]))
@@ -92,6 +94,13 @@ def fillUI():
             gachaItems = ", ".join(i["keepItems"])
             gachaItemsEntry.delete(0, tk.END)
             gachaItemsEntry.insert(0, gachaItems)
+
+            crystalPrefixEntry.delete(0, tk.END)
+            crystalPrefixEntry.insert(0, i["crystalBedPrefix"])
+
+            seedPrefixEntry.delete(0, tk.END)
+            seedPrefixEntry.insert(0, i["seedBedPrefix"])
+            
             fillingUI = False
 
 
@@ -126,7 +135,9 @@ def addLocation():
             "keepItems": ["fab", "riot", "pump"],
             "suicideBed": "suicide bed",
             "suicideFrequency": 3,
-            "turnDirection": "left"
+            "turnDirection": "left",
+            "seedBedPrefix": "gachaseed",
+            "crystalBedPrefix": "gachacrystal"
         })
         reloadLocations()
     else:
@@ -162,8 +173,10 @@ def onCropDirectionChange(*args):
     loc = getThisLocation()
     if(cropVariable.get() == "Left"):
         loc["turnDirection"] = "left"
-    else:
+    elif(cropVariable.get() == "Right"):
         loc["turnDirection"] = "right"
+    else:
+        loc["turnDirection"] = "360"
     saveJson()    
 
 def onEntryChanged(*args):
@@ -183,6 +196,8 @@ def onEntryChanged(*args):
             loc["keepItems"] = gachaItemsEntry.get().split(", ") 
         loc["suicideBed"] = suicideBedEntry.get()
         loc["suicideFrequency"] = int(suicideFrequencyEntry.get())
+        loc["seedBedPrefix"]= seedPrefixEntry.get()
+        loc["crystalBedPrefix"] = crystalPrefixEntry.get()
         saveJson()
 
 
@@ -242,7 +257,15 @@ defaultYEntry.pack(side=tk.LEFT)
 frame = ttk.Frame(r)
 frame.pack(fill=tk.X, expand=True)
 
-label = ttk.Label(frame, text="Crystal beds")
+label = ttk.Label(frame, text="Crystal bed prefix")
+label.pack(side=tk.LEFT)
+
+crystalPrefixSv = tk.StringVar()
+crystalPrefixEntry = ttk.Entry(frame, textvariable=crystalPrefixSv)
+crystalPrefixEntry.pack(side=tk.LEFT)
+
+
+label = ttk.Label(frame, text="# of beds")
 label.pack(side=tk.LEFT)
 
 crystalBedsSv = tk.StringVar()
@@ -252,7 +275,14 @@ crystalBedsEntry.pack(side=tk.LEFT)
 frame = ttk.Frame(r)
 frame.pack(fill=tk.X, expand=True)
 
-label = ttk.Label(frame, text="Seed beds")
+label = ttk.Label(frame, text="Seed bed prefix")
+label.pack(side=tk.LEFT)
+
+seedPrefixSv = tk.StringVar()
+seedPrefixEntry = ttk.Entry(frame, textvariable=seedPrefixSv)
+seedPrefixEntry.pack(side=tk.LEFT)
+
+label = ttk.Label(frame, text="# of beds")
 label.pack(side=tk.LEFT)
 
 seedBedsSv = tk.StringVar()
@@ -306,7 +336,7 @@ cropVariable.set("Left") # default value
 
 label = ttk.Label(frame, text="Crop harvest turn direction")
 label.pack(side=tk.LEFT)
-cropMenu = ttk.OptionMenu(frame, cropVariable, "", "Left", "Right")
+cropMenu = ttk.OptionMenu(frame, cropVariable, "", "Left", "Right", "360")
 cropMenu.pack(side=tk.LEFT)
 
 
@@ -328,6 +358,8 @@ pickupIntervalSv.trace_add("write", onEntryChanged)
 suicideFrequencySv.trace_add("write", onEntryChanged)
 suicideBedSv.trace_add("write", onEntryChanged)
 gachaItemsSv.trace_add("write", onEntryChanged)
+crystalPrefixSv.trace_add("write", onEntryChanged)
+seedPrefixSv.trace_add("write", onEntryChanged)
 
 updateStatus()
 r.mainloop()

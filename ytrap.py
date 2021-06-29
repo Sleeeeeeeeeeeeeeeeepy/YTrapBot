@@ -121,20 +121,17 @@ def dropGen2Suit(popcorn = False):
 
         ark.sleep(2.0)
 
-    while(checkWeHoldingSuit()):
-        if(popcorn):
-            ark.searchMyStacks("fed")
-            pyautogui.moveTo(165, 280)
-            pyautogui.click()
-            for i in range(10):
-                pyautogui.press('o')
-                ark.sleep(0.2)
-        else:
-            ark.dropItems("fed")
-            ark.dropItems("")
-        pyautogui.moveTo(800, 200)
-        ark.sleep(0.5)
     
+    if(popcorn):
+        ark.searchMyStacks("fed")
+        pyautogui.moveTo(165, 280)
+        pyautogui.click()
+        while(checkWeHoldingSuit()):
+            pyautogui.press('o')
+    else:
+        ark.dropItems("fed")
+        ark.dropItems("")
+
     ark.closeInventory()
 
 
@@ -189,7 +186,7 @@ def loadGacha():
 def whipCrystals():
     for i in range(beds["crystalBeds"]):
         setStatusText("Picking up crystals")
-        ark.bedSpawn("gachacrystal" + str(i).zfill(2), beds["bedX"], beds["bedY"])
+        ark.bedSpawn(beds["crystalBedPrefix"] + str(i).zfill(2), beds["bedX"], beds["bedY"])
         pyautogui.press('c')
         ark.lookDown()
         ark.step('s', 1.5)
@@ -296,7 +293,7 @@ def start(b):
 
                 setStatusText("Seeding at gachaseed" + str(i).zfill(2))
 
-                ark.bedSpawn("gachaseed" + str(i).zfill(2), beds["bedX"], beds["bedY"])
+                ark.bedSpawn(beds["seedBedPrefix"] + str(i).zfill(2), beds["bedX"], beds["bedY"])
                 loadGacha()
                 if(beds["dropGen2Suits"]):
                     dropGen2Suit(True)
