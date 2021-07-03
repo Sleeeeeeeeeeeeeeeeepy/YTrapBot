@@ -12,7 +12,7 @@ from ttkthemes import ThemedTk
 with open('settings.json') as json_file:
     data = json.load(json_file)
 
-r = ThemedTk(theme="arc")
+r = ThemedTk(theme="equilux")
 
 r.title('Gacha Bot')
 ytrap.setStatusText("Ready. Press F1 to start.")
@@ -53,55 +53,67 @@ fillingUI = False
 def fillUI():
     global fillingUI
     location = locationVariable.get()
-    for i in data["locations"]:
-        if(i["name"] == location):
-            fillingUI = True
-            if(i["aberrationMode"] == True):
-                mapVariable.set("Aberration")
-            elif(i["dropGen2Suits"] == True):
-                mapVariable.set("Gen2")
-            else:
-                mapVariable.set("Other")
+    try:
+        for i in data["locations"]:
+            if(i["name"] == location):
+                fillingUI = True
+                if(i["aberrationMode"] == True):
+                    mapVariable.set("Aberration")
+                elif(i["dropGen2Suits"] == True):
+                    mapVariable.set("Gen2")
+                else:
+                    mapVariable.set("Other")
+    
+                if(i["turnDirection"] == "left"):
+                    cropVariable.set("Left")
+                elif(i["turnDirection"] == "Right"):
+                    cropVariable.set("Right")
+                else:
+                    cropVariable.set("360")
+    
+                if(i["pickupMethod"] == "fspam"):
+                    pickupMethodSv.set("F Spam")
+                elif(i["pickupMethod"] == "whip"):
+                    pickupMethodSv.set("Whip")
+    
+                defaultXEntry.delete(0, tk.END)
+                defaultXEntry.insert(0, str(i["bedX"]))
+    
+                defaultYEntry.delete(0, tk.END)
+                defaultYEntry.insert(0, str(i["bedY"]))
+    
+                crystalBedsEntry.delete(0, tk.END)
+                crystalBedsEntry.insert(0, str(i["crystalBeds"]))
+    
+                seedBedsEntry.delete(0, tk.END)
+                seedBedsEntry.insert(0, str(i["seedBeds"]))
+    
+                pickupIntervalEntry.delete(0, tk.END)
+                pickupIntervalEntry.insert(0, str(i["crystalInterval"]))
+                
+                suicideFrequencyEntry.delete(0, tk.END)
+                suicideFrequencyEntry.insert(0, str(i["suicideFrequency"]))
+    
+                suicideBedEntry.delete(0, tk.END)
+                suicideBedEntry.insert(0, str(i["suicideBed"]))
+    
+                gachaItems = ", ".join(i["keepItems"])
+                gachaItemsEntry.delete(0, tk.END)
+                gachaItemsEntry.insert(0, gachaItems)
+    
+                crystalPrefixEntry.delete(0, tk.END)
+                crystalPrefixEntry.insert(0, i["crystalBedPrefix"])
+    
+                seedPrefixEntry.delete(0, tk.END)
+                seedPrefixEntry.insert(0, i["seedBedPrefix"])
 
-            if(i["turnDirection"] == "left"):
-                cropVariable.set("Left")
-            elif(i["turnDirection"] == "Right"):
-                cropVariable.set("Right")
-            else:
-                cropVariable.set("360")
+                print(i["openTribeLog"])
 
-            defaultXEntry.delete(0, tk.END)
-            defaultXEntry.insert(0, str(i["bedX"]))
-
-            defaultYEntry.delete(0, tk.END)
-            defaultYEntry.insert(0, str(i["bedY"]))
-
-            crystalBedsEntry.delete(0, tk.END)
-            crystalBedsEntry.insert(0, str(i["crystalBeds"]))
-
-            seedBedsEntry.delete(0, tk.END)
-            seedBedsEntry.insert(0, str(i["seedBeds"]))
-
-            pickupIntervalEntry.delete(0, tk.END)
-            pickupIntervalEntry.insert(0, str(i["crystalInterval"]))
+                showLogVar.set(i["openTribeLog"])
             
-            suicideFrequencyEntry.delete(0, tk.END)
-            suicideFrequencyEntry.insert(0, str(i["suicideFrequency"]))
-
-            suicideBedEntry.delete(0, tk.END)
-            suicideBedEntry.insert(0, str(i["suicideBed"]))
-
-            gachaItems = ", ".join(i["keepItems"])
-            gachaItemsEntry.delete(0, tk.END)
-            gachaItemsEntry.insert(0, gachaItems)
-
-            crystalPrefixEntry.delete(0, tk.END)
-            crystalPrefixEntry.insert(0, i["crystalBedPrefix"])
-
-            seedPrefixEntry.delete(0, tk.END)
-            seedPrefixEntry.insert(0, i["seedBedPrefix"])
-            
-            fillingUI = False
+                fillingUI = False
+    except KeyError as err:
+        tk.messagebox.showinfo("Settings file error", "The field " + str(err) + " is missing")
 
 
 def locationChanged(*args):
@@ -130,6 +142,7 @@ def addLocation():
             "crystalBeds": 1,
             "seedBeds": 12,
             "crystalInterval": 500,
+            "pickupMethod": "fspam",
             "dropGen2Suits": False,
             "aberrationMode": False,
             "keepItems": ["fab", "riot", "pump"],
@@ -137,7 +150,8 @@ def addLocation():
             "suicideFrequency": 3,
             "turnDirection": "left",
             "seedBedPrefix": "gachaseed",
-            "crystalBedPrefix": "gachacrystal"
+            "crystalBedPrefix": "gachacrystal",
+            "openTribeLog": False
         })
         reloadLocations()
     else:
@@ -179,6 +193,14 @@ def onCropDirectionChange(*args):
         loc["turnDirection"] = "360"
     saveJson()    
 
+def onPickupMethodChange(*args):
+    loc = getThisLocation()
+    if(pickupMethodSv.get() == "F Spam"):
+        loc["pickupMethod"] = "fspam"
+    if(pickupMethodSv.get() == "Whip"):
+        loc["pickupMethod"] = "whip"
+    saveJson()    
+
 def onEntryChanged(*args):
     if(fillingUI == False):
         loc = getThisLocation()
@@ -198,17 +220,24 @@ def onEntryChanged(*args):
         loc["suicideFrequency"] = int(suicideFrequencyEntry.get())
         loc["seedBedPrefix"]= seedPrefixEntry.get()
         loc["crystalBedPrefix"] = crystalPrefixEntry.get()
+
+        print(showLogVar.get())
+
+        if(showLogVar.get() == 0):
+            loc["openTribeLog"] = False
+        else:
+            loc["openTribeLog"] = True
         saveJson()
 
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 label = ttk.Label(frame, text="Plant Y Gacha Bot")
 label.config(font=("Courier", 22))
 label.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 locationVariable = tk.StringVar(frame)
 locationVariable.set("Spider Cave") # default value
 
@@ -225,7 +254,7 @@ button = ttk.Button(frame, text="Add", command = addLocation)
 button.pack(side=tk.RIGHT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 mapVariable = tk.StringVar(frame)
 mapVariable.set("Other") # default value
 
@@ -235,7 +264,7 @@ mapMenu = ttk.OptionMenu(frame, mapVariable, "", "Other", "Aberration", "Gen2")
 mapMenu.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 
 label = ttk.Label(frame, text="Bed pixel coords")
 label.pack(side=tk.LEFT)
@@ -255,7 +284,7 @@ defaultYEntry = ttk.Entry(frame, textvariable=defaultYSv)
 defaultYEntry.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 
 label = ttk.Label(frame, text="Crystal bed prefix")
 label.pack(side=tk.LEFT)
@@ -273,7 +302,7 @@ crystalBedsEntry = ttk.Entry(frame, textvariable=crystalBedsSv)
 crystalBedsEntry.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 
 label = ttk.Label(frame, text="Seed bed prefix")
 label.pack(side=tk.LEFT)
@@ -290,7 +319,7 @@ seedBedsEntry = ttk.Entry(frame, textvariable=seedBedsSv)
 seedBedsEntry.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 
 label = ttk.Label(frame, text="Crystal pickup interval")
 label.pack(side=tk.LEFT)
@@ -300,7 +329,20 @@ pickupIntervalEntry = ttk.Entry(frame, textvariable=pickupIntervalSv)
 pickupIntervalEntry.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
+
+label = ttk.Label(frame, text="Crystal pick up method")
+label.pack(side=tk.LEFT)
+
+pickupMethodSv= tk.StringVar(frame)
+pickupMethodSv.set("F spam") # default value
+
+pickupMethodMenu = ttk.OptionMenu(frame, pickupMethodSv, "", "F Spam", "Whip")
+pickupMethodMenu.pack(side=tk.LEFT)
+
+
+frame = ttk.Frame(r)
+frame.pack(fill=tk.BOTH, expand=True)
 
 label = ttk.Label(frame, text="Suicide frequency")
 label.pack(side=tk.LEFT)
@@ -310,7 +352,7 @@ suicideFrequencyEntry = ttk.Entry(frame, textvariable=suicideFrequencySv)
 suicideFrequencyEntry.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 
 label = ttk.Label(frame, text="Suicide bed name")
 label.pack(side=tk.LEFT)
@@ -320,7 +362,7 @@ suicideBedEntry = ttk.Entry(frame, textvariable=suicideBedSv)
 suicideBedEntry.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 
 label = ttk.Label(frame, text="Gacha items to keep (separate by comma)")
 label.pack(side=tk.LEFT)
@@ -330,7 +372,7 @@ gachaItemsEntry = ttk.Entry(frame, textvariable=gachaItemsSv)
 gachaItemsEntry.pack(side=tk.LEFT)
 
 frame = ttk.Frame(r)
-frame.pack(fill=tk.X, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)
 cropVariable = tk.StringVar(frame)
 cropVariable.set("Left") # default value
 
@@ -340,15 +382,26 @@ cropMenu = ttk.OptionMenu(frame, cropVariable, "", "Left", "Right", "360")
 cropMenu.pack(side=tk.LEFT)
 
 
-frame = ttk.Frame(r).pack(fill=tk.X, expand=True)
+frame = ttk.Frame(r)
+frame.pack(fill=tk.BOTH, expand=True)
+label = ttk.Label(frame, text="Open tribe log after spawning")
+label.pack(side=tk.LEFT, fill=tk.BOTH)
+
+showLogVar = tk.IntVar()
+showLogCheck = ttk.Checkbutton(frame, variable=showLogVar)
+showLogCheck.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+
+frame = ttk.Frame(r)
+frame.pack(fill=tk.BOTH, expand=True)
 statusLabel = ttk.Label(frame, text="Press F1 to start the bot")
-statusLabel.pack(side=tk.LEFT, fill=tk.X, expand=True)
+statusLabel.pack(side=tk.LEFT, fill=tk.BOTH)
 
 fillUI()
 
 locationVariable.trace("w", locationChanged)
 mapVariable.trace("w", onMapChange)
 cropVariable.trace("w", onCropDirectionChange)
+pickupMethodSv.trace("w", onPickupMethodChange)
 
 defaultXSv.trace_add("write", onEntryChanged)
 defaultYSv.trace_add("write", onEntryChanged)
@@ -360,6 +413,7 @@ suicideBedSv.trace_add("write", onEntryChanged)
 gachaItemsSv.trace_add("write", onEntryChanged)
 crystalPrefixSv.trace_add("write", onEntryChanged)
 seedPrefixSv.trace_add("write", onEntryChanged)
+showLogVar.trace_add("write", onEntryChanged)
 
 updateStatus()
 r.mainloop()

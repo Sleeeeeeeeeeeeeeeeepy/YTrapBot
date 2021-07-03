@@ -12,6 +12,8 @@ import numpy as np
 inventory_template = cv2.imread("templates/inventory_template.png", cv2.IMREAD_GRAYSCALE)
 inventory_template = cv2.Canny(inventory_template, 100, 200)
 
+tribelog_template = cv2.imread("templates/tribe_log.png", cv2.IMREAD_COLOR)
+
 img = cv2.imread("templates/bed_button_corner.png", cv2.IMREAD_GRAYSCALE)
 bed_button_edge = cv2.Canny(img,100,200)
 
@@ -21,6 +23,16 @@ lookDownDelay = 1.75
 setFps = 25
 firstRun = True
 terminated = False
+
+hsvLower = np.array([86, 109, 255]) 
+hsvUpper = np.array([106, 129, 255])
+
+hsv = cv2.cvtColor(tribelog_template, cv2.COLOR_BGR2HSV)
+mask = cv2.inRange(hsv, hsvLower, hsvUpper)
+masked_template = cv2.bitwise_and(tribelog_template, tribelog_template, mask= mask)
+tribelog_template = cv2.cvtColor(masked_template, cv2.COLOR_BGR2GRAY)
+
+
 
 #passing this function True will cause most functions in this script to throw an exception
 #useful to terminate a thread in a multithreaded environment
@@ -151,6 +163,24 @@ def inventoryIsOpen():# {{{
         return True
     return False
 
+#returns true if the tribe log is open
+def tribelogIsOpen():
+    checkTerminated()
+    roi = screen.getScreen()[80:150,1320:1510]
+    screen_hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(screen_hsv, hsvLower, hsvUpper)
+    masked_screen = cv2.bitwise_and(roi, roi, mask= mask)
+    gray_screen = cv2.cvtColor(masked_screen, cv2.COLOR_BGR2GRAY)
+
+    res = cv2.matchTemplate(gray_screen, tribelog_template, cv2.TM_CCOEFF)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+    print(max_val)
+
+    if(max_val > 50000000):
+        return True
+    return False
+
+
 #closes an inventory
 def closeInventory():# {{{
     checkTerminated()
@@ -164,6 +194,18 @@ def closeInventory():# {{{
                 break
             sleep(0.1)
 
+def closeTribeLog():
+    checkTerminated()
+    while(tribelogIsOpen() == True):
+        pyautogui.moveTo(1816, 37)
+        pyautogui.click()
+        count = 0
+        while(inventoryIsOpen()):
+            count += 1
+            if(count > 20):
+                break
+            sleep(0.1)
+        
 #crafts an item in a remote inventory (not the player inventory)
 def craft(item, timesToPressA):
     checkTerminated()

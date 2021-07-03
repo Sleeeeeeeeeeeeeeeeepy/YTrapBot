@@ -95,6 +95,23 @@ def checkWeGotCrystals():
         return True
     return False
 
+def waitForAddedGraphic():
+    counter = 0
+    while(counter < 10):
+        roi = screen.getScreen()[1030:1070, 37:142]
+        gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+
+        res = cv2.matchTemplate(gray_roi, added_template, cv2.TM_CCOEFF)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+
+        if(max_val > 3000000):
+            return True
+
+        time.sleep(0.1)
+        counter += 1
+    return False
+
+
 def dropGen2Suit(popcorn = False):
     pyautogui.press('i')
     time.sleep(2.0)
@@ -147,27 +164,43 @@ def loadGacha():
         ark.tTransferFrom(7)
         ark.closeInventory()
 
-    if(beds["turnDirection"] == "left"):
-        ark.step('left', 1.0)
-    else:
+    if(beds["turnDirection"] == 360):
+        ark.step('right', 1.0)
+        ark.harvestCropStack("trap")
+        pyautogui.press('c')
+
+        ark.step('right', 1.0)
+        ark.harvestCropStack("trap")
+        pyautogui.press('c')
+
+        ark.step('right', 1.0)
+        ark.harvestCropStack("trap")
+        pyautogui.press('c')
+
         ark.step('right', 1.0)
 
-    ark.harvestCropStack("trap")
-    pyautogui.press('c')
-    if(beds["turnDirection"] == "left"):
-        ark.step('left', 1.0)
     else:
-        ark.step('right', 1.0)
-
-    ark.lookDown()
-    ark.step('up', 0.1)
-    ark.harvestCropStack("trap")
-    pyautogui.press('c')
-    if(beds["turnDirection"] == "left"):
-        ark.step('right', 2.0)
-    else:
-        ark.step('left', 2.0)
-
+        if(beds["turnDirection"] == "left"):
+            ark.step('left', 1.0)
+        else:
+            ark.step('right', 1.0)
+    
+        ark.harvestCropStack("trap")
+        pyautogui.press('c')
+        if(beds["turnDirection"] == "left"):
+            ark.step('left', 1.0)
+        else:
+            ark.step('right', 1.0)
+    
+        ark.lookDown()
+        ark.step('up', 0.1)
+        ark.harvestCropStack("trap")
+        pyautogui.press('c')
+        if(beds["turnDirection"] == "left"):
+            ark.step('right', 2.0)
+        else:
+            ark.step('left', 2.0)
+    
     ark.lookUp()
     ark.lookDown()
 
@@ -182,40 +215,77 @@ def loadGacha():
             ark.sleep(2)
 
     
+def pickupWithFSpam():
+    pyautogui.press('c')
+    ark.lookDown()
+    ark.step('s', 1.5)
+    for i in range(6):
+        pyautogui.press('f')
+        ark.sleep(0.2)
+        ark.step('w', 0.1)
+    ark.step('w', 1.0)
+
+    pyautogui.press('f')
+        
+def pickupWithWhip():
+    pyautogui.press('c')
+    ark.lookUp()
+    if(ark.openInventory()):
+        ark.takeAll("broken")
+        ark.searchStructureStacks("whip")
+        pyautogui.moveTo(1295, 283);
+        pyautogui.dragTo(690, 1050, 0.5, button='left')
+        waitForAddedGraphic()
+        ark.closeInventory()
+
+        ark.lookDown()
+        ark.step('right', 2.0)
+        pyautogui.press('1')
+        ark.sleep(1.0)
+        pyautogui.click()
+        ark.sleep(1.0)
+        pyautogui.click()
+        ark.sleep(1.0)
+        pyautogui.press('1')
+        ark.step('left', 2.0)
+
+    else:
+        ark.lookDown()
+        pyautogui.press('c')
+        pickupWithFSpam()
+
+    
 
 def whipCrystals():
     for i in range(beds["crystalBeds"]):
         setStatusText("Picking up crystals")
         ark.bedSpawn(beds["crystalBedPrefix"] + str(i).zfill(2), beds["bedX"], beds["bedY"])
-        pyautogui.press('c')
-        ark.lookDown()
-        ark.step('s', 1.5)
-        for i in range(6):
-            pyautogui.press('f')
-            ark.sleep(0.2)
-            ark.step('w', 0.1)
-        ark.step('w', 1.0)
+        openTribeLog()
 
-        pyautogui.press('f')
-        
+        if(beds["pickupMethod"] == "whip"):
+            pickupWithWhip()
+        else:
+            pickupWithFSpam()
+
         pyautogui.press('i')
         ark.sleep(2.0)
 
+        
         ark.searchMyStacks("gacha")
         pyautogui.moveTo(167, 280, 0.1)
         pyautogui.click()
         ark.sleep(1.0)
-
+    
         count = 0
         while(checkWeGotRowOfCrystals()):
             for i in range(6):
                 pyautogui.moveTo(167+(i*95), 280, 0.1)
                 pyautogui.click()
                 pyautogui.press('e')
-
+    
             ark.sleep(0.8)
             count += 6
-
+    
         pyautogui.moveTo(165, 280)
         pyautogui.click()
         while(checkWeGotCrystals()):
@@ -225,21 +295,21 @@ def whipCrystals():
             if(count > 300):
                 break
         ark.closeInventory()
-
+    
         pyautogui.press('c')
         ark.step('up', 0.9)
-
+    
         while(canDeposit() == False):
             ark.step('w', 0.4)
             ark.sleep(0.2)
-        
+            
         for i in range(8):
             pyautogui.press('e')
             ark.sleep(0.2)
             while(ark.getBedScreenCoords() != None):
                 pyautogui.press('esc')
                 ark.sleep(2.0)
-
+    
         ark.step('up', 0.7)
         for i in range(6):
             pyautogui.press('e')
@@ -247,9 +317,16 @@ def whipCrystals():
             while(ark.getBedScreenCoords() != None):
                 pyautogui.press('esc')
                 ark.sleep(2.0)
-
+    
         ark.lookUp()
         if(ark.openInventory()):
+            time.sleep(0.5)
+            pyautogui.moveTo(690, 1050)
+            pyautogui.click()
+            pyautogui.press('t')
+            time.sleep(0.5)
+
+            ark.transferAll("whip")
             for item in beds["keepItems"]:
                 ark.transferAll(item)
             ark.dropItems("")
@@ -259,10 +336,16 @@ def whipCrystals():
             dropGen2Suit(False)
         ark.step('s', 0.4)
         ark.accessBed()
-
+    
+def openTribeLog():
+    if(beds["openTribeLog"]):
+        pyautogui.press('l')
+        ark.sleep(6)
+        ark.closeTribeLog()
+            
 def getStatus():
     return statusText
-
+    
 def stop():
     ark.terminate(True)
 
@@ -294,6 +377,7 @@ def start(b):
                 setStatusText("Seeding at gachaseed" + str(i).zfill(2))
 
                 ark.bedSpawn(beds["seedBedPrefix"] + str(i).zfill(2), beds["bedX"], beds["bedY"])
+                openTribeLog()
                 loadGacha()
                 if(beds["dropGen2Suits"]):
                     dropGen2Suit(True)

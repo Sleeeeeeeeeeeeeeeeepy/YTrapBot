@@ -10,6 +10,8 @@
             "dropGen2Suits": false,
             "keepItems": [],
             "name": "Spider Cave",
+            "openTribeLog": true,
+            "pickupMethod": "fspam",
             "seedBedPrefix": "gachaseed",
             "seedBeds": 28,
             "suicideBed": "suicide bed",
@@ -30,6 +32,8 @@
                 "pump"
             ],
             "name": "Vent",
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
             "seedBedPrefix": "gachaseed",
             "seedBeds": 10,
             "suicideBed": "suicide bed",
@@ -50,6 +54,8 @@
                 "pump"
             ],
             "name": "Oil Cave",
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
             "seedBedPrefix": "gachaseed",
             "seedBeds": 24,
             "suicideBed": "suicide bed",
@@ -71,6 +77,8 @@
                 "miner"
             ],
             "name": "Extinction Tree",
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
             "seedBedPrefix": "gachaseed",
             "seedBeds": 18,
             "suicideBed": "suicide bed",
