@@ -10,6 +10,7 @@ import screen
 crystal_template = cv2.imread("templates/gacha_crystal.png", cv2.IMREAD_GRAYSCALE)
 gen2suit_template = cv2.imread("templates/gen2suit.png", cv2.IMREAD_GRAYSCALE)
 deposit_all_template = cv2.imread("templates/deposit_all.png", cv2.IMREAD_COLOR)
+added_template = cv2.imread("templates/added_template.png", cv2.IMREAD_GRAYSCALE)
 
 lower_cyan = np.array([90,255,255])
 upper_cyan = np.array([110,255,255])
@@ -18,6 +19,7 @@ hsv = cv2.cvtColor(deposit_all_template, cv2.COLOR_BGR2HSV)
 mask = cv2.inRange(hsv, lower_cyan, upper_cyan)
 masked_template = cv2.bitwise_and(deposit_all_template, deposit_all_template, mask= mask)
 deposit_all_gray_template = cv2.cvtColor(masked_template, cv2.COLOR_BGR2GRAY)
+
 
 beds = {}
 
@@ -248,7 +250,7 @@ def pickupWithWhip():
         ark.sleep(1.0)
         pyautogui.press('1')
         ark.step('left', 2.0)
-
+        ark.lookDown()
     else:
         ark.lookDown()
         pyautogui.press('c')
