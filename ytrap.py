@@ -37,7 +37,7 @@ def setBeds(b):
     beds = b;
 
 def canDeposit():
-    roi = screen.getScreen()    
+    roi = screen.getScreen()
     screen_hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(screen_hsv, lower_cyan, upper_cyan)
     masked_screen = cv2.bitwise_and(roi, roi, mask= mask)
@@ -241,27 +241,34 @@ def pickupWithWhip():
         ark.closeInventory()
 
         ark.lookDown()
-        ark.step('right', 2.0)
+        ark.step('right', 2.1)
         pyautogui.press('1')
-        ark.sleep(1.0)
+        ark.sleep(2.0)
         pyautogui.click()
-        ark.sleep(1.0)
+        ark.sleep(5.0)
         pyautogui.click()
-        ark.sleep(1.0)
+        ark.sleep(2.0)
         pyautogui.press('1')
-        ark.step('left', 2.0)
+        ark.step('left', 2.1)
         ark.lookDown()
     else:
         ark.lookDown()
         pyautogui.press('c')
         pickupWithFSpam()
 
-    
+   
+def depositInDedi():   
+    for i in range(8):
+        pyautogui.press('e')
+        ark.sleep(0.2)
+        while(ark.getBedScreenCoords() != None):
+            pyautogui.press('esc')
+            ark.sleep(2.0)
 
 def whipCrystals():
     for i in range(beds["crystalBeds"]):
         setStatusText("Picking up crystals")
-        ark.bedSpawn(beds["crystalBedPrefix"] + str(i).zfill(2), beds["bedX"], beds["bedY"])
+        ark.bedSpawn(beds["crystalBedPrefix"] + str(i).zfill(2), beds["bedX"], beds["bedY"], beds["singlePlayer"])
         openTribeLog()
 
         if(beds["pickupMethod"] == "whip"):
@@ -305,21 +312,23 @@ def whipCrystals():
             ark.step('w', 0.4)
             ark.sleep(0.2)
             
-        for i in range(8):
-            pyautogui.press('e')
-            ark.sleep(0.2)
-            while(ark.getBedScreenCoords() != None):
-                pyautogui.press('esc')
-                ark.sleep(2.0)
+        if(beds["numDedis"] == 2):
+            depositInDedi()
+            ark.step('up', 0.7)
+            depositInDedi()
     
-        ark.step('up', 0.7)
-        for i in range(6):
-            pyautogui.press('e')
-            ark.sleep(0.2)
-            while(ark.getBedScreenCoords() != None):
-                pyautogui.press('esc')
-                ark.sleep(2.0)
-    
+        if(beds["numDedis"] == 4):
+            ark.step("right", 0.3)
+            depositInDedi()
+            ark.step('up', 0.7)
+            depositInDedi() 
+
+            ark.step("left", 0.6)
+            depositInDedi()
+            ark.step("down", 0.7)
+            depositInDedi()
+            ark.lookUp()
+
         ark.lookUp()
         if(ark.openInventory()):
             time.sleep(0.5)
@@ -329,8 +338,12 @@ def whipCrystals():
             time.sleep(0.5)
 
             ark.transferAll("whip")
+
+            for item in beds["dropItems"]:
+                ark.dropItems(item)
             for item in beds["keepItems"]:
                 ark.transferAll(item)
+
             ark.dropItems("")
             ark.closeInventory()
         ark.lookDown()
@@ -354,11 +367,14 @@ def stop():
 def start(b):
     global beds
     global lapCounter
+
     beds = b
+    ark.pause(False)
     ark.terminate(False)
     setStatusText("Starting. F2 to stop. Alt tab back into the game NOW.")
     try:
         ark.sleep(8)
+        setStatusText("spawning in...")
         start = time.time()
         while(True):
             for i in range(beds["seedBeds"]):
@@ -378,13 +394,14 @@ def start(b):
 
                 setStatusText("Seeding at gachaseed" + str(i).zfill(2))
 
-                ark.bedSpawn(beds["seedBedPrefix"] + str(i).zfill(2), beds["bedX"], beds["bedY"])
+                ark.bedSpawn(beds["seedBedPrefix"] + str(i).zfill(2), beds["bedX"], beds["bedY"], beds["singlePlayer"])
                 openTribeLog()
                 loadGacha()
                 if(beds["dropGen2Suits"]):
-                    dropGen2Suit(True)
+                    dropGen2Suit(False)
                 ark.lookDown()
                 ark.step('s', 0.3)
                 ark.accessBed()
+            time.sleep(0.1)
     except:
         print("Bot thread terminated.")

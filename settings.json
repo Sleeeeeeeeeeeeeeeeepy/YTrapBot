@@ -8,12 +8,21 @@
             "crystalBeds": 1,
             "crystalInterval": 500,
             "dropGen2Suits": false,
-            "keepItems": [],
+            "dropItems": [
+                "prim"
+            ],
+            "keepItems": [
+                "riot",
+                "fab",
+                "pump"
+            ],
             "name": "Spider Cave",
-            "openTribeLog": true,
+            "numDedis": 4,
+            "openTribeLog": false,
             "pickupMethod": "fspam",
             "seedBedPrefix": "gachaseed",
             "seedBeds": 28,
+            "singlePlayer": false,
             "suicideBed": "suicide bed",
             "suicideFrequency": 3,
             "turnDirection": "360"
@@ -26,16 +35,21 @@
             "crystalBeds": 1,
             "crystalInterval": 500,
             "dropGen2Suits": true,
+            "dropItems": [
+                "prim"
+            ],
             "keepItems": [
                 "fab",
                 "riot",
                 "pump"
             ],
             "name": "Vent",
+            "numDedis": 2,
             "openTribeLog": false,
             "pickupMethod": "fspam",
             "seedBedPrefix": "gachaseed",
             "seedBeds": 10,
+            "singlePlayer": false,
             "suicideBed": "suicide bed",
             "suicideFrequency": 5,
             "turnDirection": "360"
@@ -48,16 +62,21 @@
             "crystalBeds": 4,
             "crystalInterval": 500,
             "dropGen2Suits": false,
+            "dropItems": [
+                "prim"
+            ],
             "keepItems": [
                 "fab",
                 "riot",
                 "pump"
             ],
             "name": "Oil Cave",
+            "numDedis": 2,
             "openTribeLog": false,
             "pickupMethod": "fspam",
             "seedBedPrefix": "gachaseed",
             "seedBeds": 24,
+            "singlePlayer": false,
             "suicideBed": "suicide bed",
             "suicideFrequency": 1,
             "turnDirection": "left"
@@ -70,6 +89,9 @@
             "crystalBeds": 2,
             "crystalInterval": 500,
             "dropGen2Suits": false,
+            "dropItems": [
+                "prim"
+            ],
             "keepItems": [
                 "fab",
                 "riot",
@@ -77,10 +99,40 @@
                 "miner"
             ],
             "name": "Extinction Tree",
+            "numDedis": 2,
             "openTribeLog": false,
             "pickupMethod": "fspam",
             "seedBedPrefix": "gachaseed",
             "seedBeds": 18,
+            "singlePlayer": false,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 3,
+            "turnDirection": "360"
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 934,
+            "bedY": 662,
+            "crystalBedPrefix": "bed",
+            "crystalBeds": 1,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "dropItems": [
+                "prim",
+                "ramshackle"
+            ],
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump"
+            ],
+            "name": "Bog Tree",
+            "numDedis": 4,
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
+            "seedBedPrefix": "seed",
+            "seedBeds": 6,
+            "singlePlayer": true,
             "suicideBed": "suicide bed",
             "suicideFrequency": 3,
             "turnDirection": "360"

@@ -5,6 +5,7 @@ from tkinter import messagebox
 from pynput.keyboard import Key, Listener
 import ytrap
 import threading
+import ark
 from tkinter import ttk
 from ttkthemes import ThemedTk
 
@@ -17,19 +18,35 @@ r = ThemedTk(theme="equilux")
 r.title('Gacha Bot')
 ytrap.setStatusText("Ready. Press F1 to start.")
 
+writeJson = False
+fillingUI = False
+
+
 def updateStatus():
+    global writeJson
     statusLabel['text'] = ytrap.getStatus()
-    r.after(100, updateStatus)
+    if(writeJson):
+        file = open("settings.json", "w")
+        file.write(json.dumps(data, indent=4, sort_keys=True))
+        file.close()
+        writeJson = False
+
+    r.after(200, updateStatus)
 
 def onKeyPress(key):
     if(key == Key.f1):
-        saveJson()
-        print(getThisLocation())
         x = threading.Thread(target=ytrap.start, args=([getThisLocation()]), daemon=True)
         x.start()
     if(key == Key.f2):
         ytrap.stop()
         ytrap.setStatusText("Ready. Press F1 to start.")
+    if(key == Key.f3):
+        ark.pause(not ark.getPaused())
+        if(ark.getPaused()):
+            ytrap.setStatusText("Paused")
+        else:
+            ytrap.setStatusText("Resumed")
+
 
 
 def onKeyRelease(key):
@@ -45,11 +62,9 @@ def getThisLocation():
 
 
 def saveJson():
-    file = open("settings.json", "w")
-    file.write(json.dumps(data, indent=4, sort_keys=True))
-    file.close()
+   global writeJson
+   writeJson = True
 
-fillingUI = False
 def fillUI():
     global fillingUI
     location = locationVariable.get()
@@ -76,6 +91,11 @@ def fillUI():
                 elif(i["pickupMethod"] == "whip"):
                     pickupMethodSv.set("Whip")
     
+                if(i["numDedis"] == 2):
+                    numDediSv.set("2")
+                elif(i["numDedis"] == 4):
+                    numDediSv.set("4")
+
                 defaultXEntry.delete(0, tk.END)
                 defaultXEntry.insert(0, str(i["bedX"]))
     
@@ -100,6 +120,10 @@ def fillUI():
                 gachaItems = ", ".join(i["keepItems"])
                 gachaItemsEntry.delete(0, tk.END)
                 gachaItemsEntry.insert(0, gachaItems)
+
+                gachaItems = ", ".join(i["dropItems"])
+                gachaDropItemsEntry.delete(0, tk.END)
+                gachaDropItemsEntry.insert(0, gachaItems)
     
                 crystalPrefixEntry.delete(0, tk.END)
                 crystalPrefixEntry.insert(0, i["crystalBedPrefix"])
@@ -107,9 +131,8 @@ def fillUI():
                 seedPrefixEntry.delete(0, tk.END)
                 seedPrefixEntry.insert(0, i["seedBedPrefix"])
 
-                print(i["openTribeLog"])
-
                 showLogVar.set(i["openTribeLog"])
+                singlePlayerVar.set(i["singlePlayer"])
             
                 fillingUI = False
     except KeyError as err:
@@ -146,12 +169,15 @@ def addLocation():
             "dropGen2Suits": False,
             "aberrationMode": False,
             "keepItems": ["fab", "riot", "pump"],
+            "dropItems": ["prim", "ramshackle"],
             "suicideBed": "suicide bed",
             "suicideFrequency": 3,
             "turnDirection": "left",
             "seedBedPrefix": "gachaseed",
             "crystalBedPrefix": "gachacrystal",
-            "openTribeLog": False
+            "openTribeLog": False,
+            "numDedis": 2,
+            "singlePlayer": False
         })
         reloadLocations()
     else:
@@ -201,6 +227,14 @@ def onPickupMethodChange(*args):
         loc["pickupMethod"] = "whip"
     saveJson()    
 
+def onNumDediChange(*args):
+    loc = getThisLocation()
+    if(numDediSv.get() == "2"):
+        loc["numDedis"] = 2
+    if(numDediSv.get() == "4"):
+        loc["numDedis"] = 4
+    saveJson()    
+
 def onEntryChanged(*args):
     if(fillingUI == False):
         loc = getThisLocation()
@@ -216,6 +250,15 @@ def onEntryChanged(*args):
             loc["keepItems"] = [""]
         else:    
             loc["keepItems"] = gachaItemsEntry.get().split(", ") 
+
+        gachaDropItems = gachaDropItemsEntry.get()
+        if(gachaDropItems == ""):
+            loc["dropItems"] = []
+        elif(gachaDropItems == "*"):
+            loc["dropItems"] = [""]
+        else:    
+            loc["dropItems"] = gachaDropItemsEntry.get().split(", ")
+
         loc["suicideBed"] = suicideBedEntry.get()
         loc["suicideFrequency"] = int(suicideFrequencyEntry.get())
         loc["seedBedPrefix"]= seedPrefixEntry.get()
@@ -227,6 +270,11 @@ def onEntryChanged(*args):
             loc["openTribeLog"] = False
         else:
             loc["openTribeLog"] = True
+
+        if(singlePlayerVar.get() == 0):
+            loc["singlePlayer"] = False
+        else:
+            loc["singlePlayer"] = True
         saveJson()
 
 
@@ -262,6 +310,14 @@ label = ttk.Label(frame, text="Map")
 label.pack(side=tk.LEFT)
 mapMenu = ttk.OptionMenu(frame, mapVariable, "", "Other", "Aberration", "Gen2")
 mapMenu.pack(side=tk.LEFT)
+
+label = ttk.Label(frame, text="Single player")
+label.pack(side=tk.LEFT, fill=tk.BOTH)
+
+singlePlayerVar = tk.IntVar()
+singlePlayerCheck = ttk.Checkbutton(frame, variable=singlePlayerVar)
+singlePlayerCheck.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+
 
 frame = ttk.Frame(r)
 frame.pack(fill=tk.BOTH, expand=True)
@@ -340,6 +396,18 @@ pickupMethodSv.set("F spam") # default value
 pickupMethodMenu = ttk.OptionMenu(frame, pickupMethodSv, "", "F Spam", "Whip")
 pickupMethodMenu.pack(side=tk.LEFT)
 
+frame = ttk.Frame(r)
+frame.pack(fill=tk.BOTH, expand=True)
+
+label = ttk.Label(frame, text="Number of dedis")
+label.pack(side=tk.LEFT)
+
+numDediSv = tk.StringVar(frame)
+numDediSv.set("2") # default value
+
+numDediMenu = ttk.OptionMenu(frame, numDediSv, "", "2", "4")
+numDediMenu.pack(side=tk.LEFT)
+
 
 frame = ttk.Frame(r)
 frame.pack(fill=tk.BOTH, expand=True)
@@ -364,12 +432,23 @@ suicideBedEntry.pack(side=tk.LEFT)
 frame = ttk.Frame(r)
 frame.pack(fill=tk.BOTH, expand=True)
 
+label = ttk.Label(frame, text="Gacha items to drop (separate by comma)")
+label.pack(side=tk.LEFT)
+
+gachaDropItemsSv = tk.StringVar()
+gachaDropItemsEntry = ttk.Entry(frame, textvariable=gachaDropItemsSv)
+gachaDropItemsEntry.pack(side=tk.LEFT)
+
+frame = ttk.Frame(r)
+frame.pack(fill=tk.BOTH, expand=True)
+
 label = ttk.Label(frame, text="Gacha items to keep (separate by comma)")
 label.pack(side=tk.LEFT)
 
 gachaItemsSv = tk.StringVar()
 gachaItemsEntry = ttk.Entry(frame, textvariable=gachaItemsSv)
 gachaItemsEntry.pack(side=tk.LEFT)
+
 
 frame = ttk.Frame(r)
 frame.pack(fill=tk.BOTH, expand=True)
@@ -402,6 +481,7 @@ locationVariable.trace("w", locationChanged)
 mapVariable.trace("w", onMapChange)
 cropVariable.trace("w", onCropDirectionChange)
 pickupMethodSv.trace("w", onPickupMethodChange)
+numDediSv.trace("w", onNumDediChange)
 
 defaultXSv.trace_add("write", onEntryChanged)
 defaultYSv.trace_add("write", onEntryChanged)
@@ -411,9 +491,11 @@ pickupIntervalSv.trace_add("write", onEntryChanged)
 suicideFrequencySv.trace_add("write", onEntryChanged)
 suicideBedSv.trace_add("write", onEntryChanged)
 gachaItemsSv.trace_add("write", onEntryChanged)
+gachaDropItemsSv.trace_add("write", onEntryChanged)
 crystalPrefixSv.trace_add("write", onEntryChanged)
 seedPrefixSv.trace_add("write", onEntryChanged)
 showLogVar.trace_add("write", onEntryChanged)
+singlePlayerVar.trace_add("write", onEntryChanged)
 
 updateStatus()
 r.mainloop()

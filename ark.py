@@ -23,6 +23,7 @@ lookDownDelay = 1.75
 setFps = 25
 firstRun = True
 terminated = False
+paused = False
 
 hsvLower = np.array([86, 109, 255]) 
 hsvUpper = np.array([106, 129, 255])
@@ -40,11 +41,31 @@ def terminate(t):
     global terminated
     terminated = t
 
+#passing this function True will cause the bot to halt until it is passed False again
+#note that terminate(True) will still kill the bot
+def pause(p):
+    global paused
+    paused = p
+
+#returns the paused state
+def getPaused():
+    global paused
+    return paused
+
 #internal functino, don't use it
 #throws an exception if terminated is True
 def checkTerminated():
+    global paused
+    global terminated
+
     if(terminated):
         raise Exception("Bot thread terminated.")
+
+    #if paused, halt but also die if terminated 
+    while(paused):
+        time.sleep(0.1)
+        if(terminated):
+            raise Exception("Bot thread terminated.")
 
 #internal function, don't use. sleeps for a period of time
 def sleep(s):
@@ -126,9 +147,14 @@ def checkBedButtonEdge():
         return True
     return False
 
+def detectWhiteFlash():
+    roi = screen.getScreen()[700:900,0:1920]
+    res1 = np.all([roi == 255])
+    return res1
+ 
 #spawns on a bed named bedName at click coords x, y
 #requires the player to have opened a bed to fast travel first
-def bedSpawn(bedName, x, y):
+def bedSpawn(bedName, x, y, singlePlayer = False):
     global firstRun
     checkTerminated()
     sleep(1.5)
@@ -142,12 +168,33 @@ def bedSpawn(bedName, x, y):
         pyautogui.moveTo(755, 983)
         sleep(0.25)
         pyautogui.click()
+        count = 0
+        while(detectWhiteFlash() == False):
+            time.sleep(0.1)
+            count += 1
+            if(count > 200):
+                break
+
         sleep(12)
-        pyautogui.press('c')
         if(firstRun == True):
             firstRun = False
             limitFps()
             setGamma()
+        if(singlePlayer):
+            sleep(1.0)
+            lookDown()
+            pyautogui.keyDown('e')
+            sleep(1.0)
+            pyautogui.moveTo(1250, 550)
+            sleep(1.0)
+            pyautogui.keyUp('e')
+            sleep(1.0)
+            pyautogui.press('e')
+            sleep(1.0)
+            step('left', 1.0)
+
+
+        pyautogui.press('c')
         return True
     else:
         return False
@@ -321,6 +368,7 @@ def tTransferTo(nRows):
         for i in range(6):
             pyautogui.moveTo(167+(i*95), 280, 0.1)
             pyautogui.press('t')
+            checkTerminated()
 
 def tTransferFrom(nRows):
     checkTerminated()
@@ -330,6 +378,7 @@ def tTransferFrom(nRows):
         for i in range(6):
             pyautogui.moveTo(1288+(i*95), 280, 0.05)
             pyautogui.press('t')
+            checkTerminated()
 
 def getBedScreenCoords():
     checkTerminated()
