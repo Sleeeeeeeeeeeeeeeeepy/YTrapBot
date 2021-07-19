@@ -290,7 +290,7 @@ def whipCrystals():
 
         pyautogui.press('i')
         ark.sleep(2.0)
-        while(ark.inventoryIsOpen() == False)
+        while(ark.inventoryIsOpen() == False):
             pyautogui.press('i')
             ark.sleep(2.0)
 
