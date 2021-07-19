@@ -10,6 +10,7 @@ import screen
 crystal_template = cv2.imread("templates/gacha_crystal.png", cv2.IMREAD_GRAYSCALE)
 gen2suit_template = cv2.imread("templates/gen2suit.png", cv2.IMREAD_GRAYSCALE)
 deposit_all_template = cv2.imread("templates/deposit_all.png", cv2.IMREAD_COLOR)
+tooltips_template = cv2.imread("templates/tool_tips_enabled.png", cv2.IMREAD_GRAYSCALE)
 added_template = cv2.imread("templates/added_template.png", cv2.IMREAD_GRAYSCALE)
 
 lower_cyan = np.array([90,255,255])
@@ -35,6 +36,17 @@ def setStatusText(txt):
 
 def setBeds(b):
     beds = b;
+
+def disableToolTips():
+    roi = screen.getScreen()[164:210,623:668]
+    gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+
+    res = cv2.matchTemplate(gray_roi, crystal_template, cv2.TM_CCOEFF)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+
+    if(max_val > 4000000):
+        pyautogui.press('g')
+
 
 def canDeposit():
     roi = screen.getScreen()
@@ -278,7 +290,11 @@ def whipCrystals():
 
         pyautogui.press('i')
         ark.sleep(2.0)
+        while(ark.inventoryIsOpen() == False)
+            pyautogui.press('i')
+            ark.sleep(2.0)
 
+        disableToolTips()
         
         ark.searchMyStacks("gacha")
         pyautogui.moveTo(167, 280, 0.1)
@@ -354,7 +370,7 @@ def whipCrystals():
     
 def openTribeLog():
     if(beds["openTribeLog"]):
-        pyautogui.press('l')
+        ark.openTribeLog()
         ark.sleep(6)
         ark.closeTribeLog()
             

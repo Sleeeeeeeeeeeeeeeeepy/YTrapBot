@@ -241,6 +241,14 @@ def closeInventory():# {{{
                 break
             sleep(0.1)
 
+def openTribeLog():
+    checkTerminated()
+    pyautogui.press('l')
+    sleep(2.0)
+    while(tribelogIsOpen() == False):
+        pyautogui.press('l')
+        sleep(2.0)
+
 def closeTribeLog():
     checkTerminated()
     while(tribelogIsOpen() == True):

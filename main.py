@@ -16,6 +16,7 @@ with open('settings.json') as json_file:
 r = ThemedTk(theme="equilux")
 
 r.title('Gacha Bot')
+r.iconphoto(True, tk.PhotoImage(file='icon.png'))
 ytrap.setStatusText("Ready. Press F1 to start.")
 
 writeJson = False
@@ -81,7 +82,7 @@ def fillUI():
     
                 if(i["turnDirection"] == "left"):
                     cropVariable.set("Left")
-                elif(i["turnDirection"] == "Right"):
+                elif(i["turnDirection"] == "right"):
                     cropVariable.set("Right")
                 else:
                     cropVariable.set("360")
