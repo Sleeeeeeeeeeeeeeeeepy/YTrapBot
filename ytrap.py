@@ -244,6 +244,7 @@ def loadGacha():
     for i in range(30):
         pyautogui.press('o')
         ark.sleep(0.5)
+    ark.dropItems("")
     ark.closeInventory()
 
     
