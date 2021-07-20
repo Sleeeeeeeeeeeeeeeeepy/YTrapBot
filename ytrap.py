@@ -322,9 +322,10 @@ def whipCrystals():
     
         count = 0
         while(checkWeGotRowOfCrystals()):
+            pyautogui.moveTo(167, 280)
+            pyautogui.click()
             for i in range(6):
                 pyautogui.moveTo(167+(i*95), 280, 0.1)
-                pyautogui.click()
                 pyautogui.press('e')
     
             ark.sleep(0.8)
