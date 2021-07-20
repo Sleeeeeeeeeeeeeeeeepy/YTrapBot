@@ -175,10 +175,13 @@ def loadGacha():
             return
         
         ark.searchStructureStacks("pellet")
-        ark.tTransferFrom(7)
+        if(beds["turnDirection"] == "360"):
+            ark.tTransferFrom(10)
+        else:
+            ark.tTransferFrom(7)
         ark.closeInventory()
 
-    if(beds["turnDirection"] == 360):
+    if(beds["turnDirection"] == "360"):
         ark.step('right', 1.0)
         ark.harvestCropStack("trap")
         pyautogui.press('c')
@@ -218,7 +221,7 @@ def loadGacha():
     ark.lookUp()
     ark.lookDown()
 
-    for i in range(30):
+    for i in range(10):
         if(ark.openInventory() == True):
             ark.transferAll("trap")
             ark.transferAll()
@@ -227,6 +230,20 @@ def loadGacha():
             return
         else:
             ark.sleep(2)
+
+    pyautogui.press('i')
+    time.sleep(2.0)
+    while(ark.inventoryIsOpen() == False):
+        pyautogui.press('i')
+        ark.sleep(2.0)
+    
+
+    pyautogui.moveTo(165, 280)
+    pyautogui.click()
+    for i in range(30):
+        pyautogui.press('o')
+        ark.sleep(0.5)
+    ark.closeInventory()
 
     
 def pickupWithFSpam():
@@ -366,7 +383,8 @@ def whipCrystals():
         if(beds["dropGen2Suits"]):
             dropGen2Suit(False)
         ark.step('s', 0.4)
-        ark.accessBed()
+        while(ark.accessBed() == False):
+            ark.sleep(10)
     
 def openTribeLog():
     if(beds["openTribeLog"]):
@@ -417,7 +435,9 @@ def start(b):
                     dropGen2Suit(False)
                 ark.lookDown()
                 ark.step('s', 0.3)
-                ark.accessBed()
+                while(ark.accessBed() == False):
+                    ark.sleep(10)
+
             time.sleep(0.1)
     except:
         print("Bot thread terminated.")
