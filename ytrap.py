@@ -238,6 +238,7 @@ def loadGacha():
         ark.sleep(2.0)
     
 
+    ark.searchMyStacks("trap")
     pyautogui.moveTo(165, 280)
     pyautogui.click()
     for i in range(30):
