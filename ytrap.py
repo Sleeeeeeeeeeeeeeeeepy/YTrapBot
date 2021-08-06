@@ -186,10 +186,15 @@ def loadGacha():
         ark.harvestCropStack("trap")
         pyautogui.press('c')
 
+        ark.lookUp()
+        ark.lookDown()
+
         ark.step('right', 1.0)
         ark.harvestCropStack("trap")
         pyautogui.press('c')
 
+        ark.lookUp()
+        ark.lookDown()
         ark.step('right', 1.0)
         ark.harvestCropStack("trap")
         pyautogui.press('c')
