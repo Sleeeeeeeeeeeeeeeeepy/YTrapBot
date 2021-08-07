@@ -131,6 +131,8 @@ def fillUI():
     
                 seedPrefixEntry.delete(0, tk.END)
                 seedPrefixEntry.insert(0, i["seedBedPrefix"])
+                
+                sideVaultVar.set(i["sideVaults"])
 
                 showLogVar.set(i["openTribeLog"])
                 singlePlayerVar.set(i["singlePlayer"])
@@ -178,7 +180,8 @@ def addLocation():
             "crystalBedPrefix": "gachacrystal",
             "openTribeLog": False,
             "numDedis": 2,
-            "singlePlayer": False
+            "singlePlayer": False,
+            "sideVaults": False
         })
         reloadLocations()
     else:
@@ -265,7 +268,10 @@ def onEntryChanged(*args):
         loc["seedBedPrefix"]= seedPrefixEntry.get()
         loc["crystalBedPrefix"] = crystalPrefixEntry.get()
 
-        print(showLogVar.get())
+        if(sideVaultVar.get() == 0):
+            loc["sideVaults"] = False
+        else:
+            loc["sideVaults"] = True
 
         if(showLogVar.get() == 0):
             loc["openTribeLog"] = False
@@ -400,6 +406,17 @@ pickupMethodMenu.pack(side=tk.LEFT)
 frame = ttk.Frame(r)
 frame.pack(fill=tk.BOTH, expand=True)
 
+label = ttk.Label(frame, text="Vaults on the side")
+label.pack(side=tk.LEFT)
+
+sideVaultVar = tk.IntVar()
+sideVaultCheck = ttk.Checkbutton(frame, variable=sideVaultVar)
+sideVaultCheck.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+
+
+frame = ttk.Frame(r)
+frame.pack(fill=tk.BOTH, expand=True)
+
 label = ttk.Label(frame, text="Number of dedis")
 label.pack(side=tk.LEFT)
 
@@ -495,6 +512,7 @@ gachaItemsSv.trace_add("write", onEntryChanged)
 gachaDropItemsSv.trace_add("write", onEntryChanged)
 crystalPrefixSv.trace_add("write", onEntryChanged)
 seedPrefixSv.trace_add("write", onEntryChanged)
+sideVaultVar.trace_add("write", onEntryChanged)
 showLogVar.trace_add("write", onEntryChanged)
 singlePlayerVar.trace_add("write", onEntryChanged)
 

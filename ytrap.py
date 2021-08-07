@@ -267,7 +267,11 @@ def pickupWithFSpam():
         
 def pickupWithWhip():
     pyautogui.press('c')
-    ark.lookUp()
+    if(beds["sideVaults"]):
+        ark.step('left', 1.2)
+    else:
+        ark.lookUp()
+
     if(ark.openInventory()):
         ark.takeAll("broken")
         ark.searchStructureStacks("whip")
@@ -276,7 +280,10 @@ def pickupWithWhip():
         waitForAddedGraphic()
         ark.closeInventory()
 
-        ark.lookDown()
+        if(beds["sideVaults"]): 
+            ark.step('right', 1.2)    
+        else:
+            ark.lookDown()
         ark.step('right', 2.1)
         pyautogui.press('1')
         ark.sleep(2.0)
@@ -288,7 +295,10 @@ def pickupWithWhip():
         ark.step('left', 2.1)
         ark.lookDown()
     else:
-        ark.lookDown()
+        if(beds["sideVaults"]):
+            ark.step('right', 1.2)
+        else:
+            ark.lookDown()
         pyautogui.press('c')
         pickupWithFSpam()
 
@@ -370,7 +380,13 @@ def whipCrystals():
             depositInDedi()
             ark.lookUp()
 
-        ark.lookUp()
+        if(beds["sideVaults"]):
+            ark.lookUp()
+            ark.lookDown()
+            ark.step('left', 1.2)
+        else:
+            ark.lookUp()
+
         if(ark.openInventory()):
             time.sleep(0.5)
             pyautogui.moveTo(690, 1050)
@@ -387,7 +403,12 @@ def whipCrystals():
 
             ark.dropItems("")
             ark.closeInventory()
-        ark.lookDown()
+        if(beds["sideVaults"]):
+            ark.step('right', 1.2)
+            if(beds["numDedis"] == 4):
+                ark.step('right', 0.2)
+        else:
+            ark.lookDown()
         if(beds["dropGen2Suits"]):
             dropGen2Suit(False)
         ark.step('s', 0.4)

@@ -422,7 +422,10 @@ def dropItems(thing):
     pyautogui.keyDown('ctrl')
     pyautogui.press('a')
     pyautogui.keyUp('ctrl')
-    pyautogui.typewrite(thing, interval=0.02)
+    if(thing == ""):
+        pyautogui.press("backspace")
+    else:
+        pyautogui.typewrite(thing, interval=0.02)
     sleep(0.5)
     pyautogui.moveTo(412, 190)
     pyautogui.click()
@@ -474,7 +477,7 @@ def harvestCropStack(fruit):
             transferAll()
             sleep(0.2)
             closeInventory()
-        step('up', 0.1)
+        step('up', 0.07)
 
     pyautogui.press('c')
     step('down', 0.7)
@@ -485,7 +488,7 @@ def harvestCropStack(fruit):
             transferAll()
             sleep(0.2)
             closeInventory()
-        step('up', 0.1)
+        step('up', 0.07)
     
     
             
