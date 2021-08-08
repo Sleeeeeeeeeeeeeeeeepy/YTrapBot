@@ -58,7 +58,7 @@ def canDeposit():
     res = cv2.matchTemplate(gray_screen, deposit_all_gray_template, cv2.TM_CCOEFF)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 
-    if(max_val > 14000000):
+    if(max_val > 10000000):
         return True
     return False
 
@@ -268,7 +268,7 @@ def pickupWithFSpam():
 def pickupWithWhip():
     pyautogui.press('c')
     if(beds["sideVaults"]):
-        ark.step('left', 1.2)
+        ark.step('left', 1.0)
     else:
         ark.lookUp()
 
@@ -383,7 +383,7 @@ def whipCrystals():
         if(beds["sideVaults"]):
             ark.lookUp()
             ark.lookDown()
-            ark.step('left', 1.2)
+            ark.step('left', 1.0)
         else:
             ark.lookUp()
 
@@ -405,8 +405,6 @@ def whipCrystals():
             ark.closeInventory()
         if(beds["sideVaults"]):
             ark.step('right', 1.2)
-            if(beds["numDedis"] == 4):
-                ark.step('right', 0.2)
         else:
             ark.lookDown()
         if(beds["dropGen2Suits"]):

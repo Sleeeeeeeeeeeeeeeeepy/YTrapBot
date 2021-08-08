@@ -17,6 +17,14 @@ mask = cv2.inRange(hsv, invHsvLower, invHsvUpper)
 masked_template = cv2.bitwise_and(inventory_template, inventory_template, mask= mask)
 inventory_template = cv2.cvtColor(masked_template, cv2.COLOR_BGR2GRAY)
 
+
+rr_inventory = cv2.imread("templates/receiving_remote_inventory.png", cv2.IMREAD_COLOR)
+hsv = cv2.cvtColor(rr_inventory, cv2.COLOR_BGR2HSV)
+mask = cv2.inRange(hsv, invHsvLower, invHsvUpper)
+masked_template = cv2.bitwise_and(rr_inventory, rr_inventory, mask= mask)
+rr_inventory = cv2.cvtColor(masked_template, cv2.COLOR_BGR2GRAY)
+
+
 tribelog_template = cv2.imread("templates/tribe_log.png", cv2.IMREAD_COLOR)
 
 img = cv2.imread("templates/bed_button_corner.png", cv2.IMREAD_GRAYSCALE)
@@ -90,7 +98,7 @@ def limitFps():
     global setFps
     checkTerminated()
     pyautogui.press("tab")
-    sleep(0.2)
+    sleep(0.5)
     pyautogui.typewrite("t.maxfps " + str(setFps), interval=0.02)
     pyautogui.press("enter")
 
@@ -98,7 +106,7 @@ def limitFps():
 def setGamma():
     checkTerminated()
     pyautogui.press("tab")
-    sleep(0.2)
+    sleep(0.5)
     pyautogui.typewrite("gamma 5", interval=0.02)
     pyautogui.press("enter")
 
@@ -180,7 +188,7 @@ def bedSpawn(bedName, x, y, singlePlayer = False):
             if(count > 200):
                 break
 
-        sleep(12)
+        sleep(13)
         if(firstRun == True):
             firstRun = False
             limitFps()
@@ -218,6 +226,21 @@ def inventoryIsOpen():# {{{
     if(max_val > 50000000.0):
         return True
     return False
+
+def receivingRemoteInventory():
+    checkTerminated()
+    roi = screen.getScreen()[230:940,1240:1820]
+    screen_hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(screen_hsv, invHsvLower, invHsvUpper)
+    masked_screen = cv2.bitwise_and(roi, roi, mask= mask)
+    gray_screen = cv2.cvtColor(masked_screen, cv2.COLOR_BGR2GRAY)
+
+    res = cv2.matchTemplate(gray_screen, rr_inventory, cv2.TM_CCOEFF)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+    if(max_val > 30000000.0):
+        return True
+    return False
+
 
 #returns true if the tribe log is open
 def tribelogIsOpen():
@@ -374,6 +397,9 @@ def openInventory():
           if(count > 20):
               return False
           sleep(0.1)
+    while(receivingRemoteInventory()):
+        time.sleep(0.5)
+
     return True
 
 
