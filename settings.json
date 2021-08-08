@@ -14,14 +14,15 @@
             "keepItems": [
                 "riot",
                 "fab",
-                "pump"
+                "pump",
+                "miner"
             ],
             "name": "Spider Cave",
             "numDedis": 4,
             "openTribeLog": false,
             "pickupMethod": "fspam",
             "seedBedPrefix": "t1seed",
-            "seedBeds": 22,
+            "seedBeds": 24,
             "sideVaults": true,
             "singlePlayer": false,
             "suicideBed": "suicide bed",

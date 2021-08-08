@@ -9,8 +9,13 @@ import screen
 import cv2
 import numpy as np
 
-inventory_template = cv2.imread("templates/inventory_template.png", cv2.IMREAD_GRAYSCALE)
-inventory_template = cv2.Canny(inventory_template, 100, 200)
+inventory_template = cv2.imread("templates/inventory_template.png", cv2.IMREAD_COLOR)
+invHsvLower = np.array([86,117,255])
+invHsvUpper = np.array([106,137,255])
+hsv = cv2.cvtColor(inventory_template, cv2.COLOR_BGR2HSV)
+mask = cv2.inRange(hsv, invHsvLower, invHsvUpper)
+masked_template = cv2.bitwise_and(inventory_template, inventory_template, mask= mask)
+inventory_template = cv2.cvtColor(masked_template, cv2.COLOR_BGR2GRAY)
 
 tribelog_template = cv2.imread("templates/tribe_log.png", cv2.IMREAD_COLOR)
 
@@ -202,11 +207,15 @@ def bedSpawn(bedName, x, y, singlePlayer = False):
 #returns true if an inventory is open
 def inventoryIsOpen():# {{{
     checkTerminated()
-    img = screen.getGrayScreen()
-    img = cv2.Canny(img, 100, 200)
-    res = cv2.matchTemplate(img, inventory_template, cv2.TM_CCOEFF)
+    roi = screen.getScreen()[90:150,100:300]
+    screen_hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(screen_hsv, invHsvLower, invHsvUpper)
+    masked_screen = cv2.bitwise_and(roi, roi, mask= mask)
+    gray_screen = cv2.cvtColor(masked_screen, cv2.COLOR_BGR2GRAY)
+
+    res = cv2.matchTemplate(gray_screen, inventory_template, cv2.TM_CCOEFF)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-    if(max_val > 40000000):
+    if(max_val > 50000000.0):
         return True
     return False
 
@@ -240,6 +249,7 @@ def closeInventory():# {{{
             if(count > 20):
                 break
             sleep(0.1)
+    time.sleep(0.1)
 
 def openTribeLog():
     checkTerminated()
@@ -477,10 +487,10 @@ def harvestCropStack(fruit):
             transferAll()
             sleep(0.2)
             closeInventory()
-        step('up', 0.07)
+        step('up', 0.09)
 
     pyautogui.press('c')
-    step('down', 0.7)
+    step('down', 0.4)
 
     for i in range(4):
         if(openInventory()):
@@ -488,7 +498,7 @@ def harvestCropStack(fruit):
             transferAll()
             sleep(0.2)
             closeInventory()
-        step('up', 0.07)
+        step('up', 0.09)
     
     
             
