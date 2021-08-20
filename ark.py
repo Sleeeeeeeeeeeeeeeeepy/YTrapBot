@@ -221,11 +221,15 @@ def inventoryIsOpen():# {{{
     masked_screen = cv2.bitwise_and(roi, roi, mask= mask)
     gray_screen = cv2.cvtColor(masked_screen, cv2.COLOR_BGR2GRAY)
 
+    cv2.imwrite("dump.png", gray_screen)
+
     res = cv2.matchTemplate(gray_screen, inventory_template, cv2.TM_CCOEFF)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
     if(max_val > 50000000.0):
         return True
     return False
+
+
 
 def receivingRemoteInventory():
     checkTerminated()
@@ -388,13 +392,13 @@ def transferStacks(thing, count):# {{{
         sleep(0.5)
         counter += 1
 
-def openInventory():
+def openInventory(retries = 20):
     checkTerminated()
     pyautogui.press('f')
     count = 0
     while(inventoryIsOpen() == False):
           count += 1
-          if(count > 20):
+          if(count > retries):
               return False
           sleep(0.1)
     while(receivingRemoteInventory()):
@@ -501,14 +505,20 @@ def step(key, delay):
     sleep(delay)
     pyautogui.keyUp(key)
 
+def crystalHotBarUse():
+    for i in range(2, 10):
+        pyautogui.press(str(i))
+        sleep(0.05)
+    pyautogui.press("0")
+    sleep(0.1)
 
-def harvestCropStack(fruit):
+def harvestCropStack(fruit, lookUpTime=1.0):
     checkTerminated()
     lookDown()
-    step('up', 1.0)
+    step('up', lookUpTime)
 
     for i in range(4):
-        if(openInventory()):
+        if(openInventory(80)):
             takeAll(fruit)
             transferAll()
             sleep(0.2)
@@ -518,8 +528,8 @@ def harvestCropStack(fruit):
     pyautogui.press('c')
     step('down', 0.4)
 
-    for i in range(4):
-        if(openInventory()):
+    for i in range(3):
+        if(openInventory(80)):
             takeAll(fruit)
             transferAll()
             sleep(0.2)

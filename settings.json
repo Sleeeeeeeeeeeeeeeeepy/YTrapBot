@@ -6,7 +6,7 @@
             "bedY": 537,
             "crystalBedPrefix": "t1crystal",
             "crystalBeds": 1,
-            "crystalInterval": 500,
+            "crystalInterval": 530,
             "dropGen2Suits": false,
             "dropItems": [
                 "prim"
@@ -141,6 +141,36 @@
             "singlePlayer": true,
             "suicideBed": "suicide bed",
             "suicideFrequency": 3,
+            "turnDirection": "360"
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 814,
+            "bedY": 546,
+            "crystalBedPrefix": "t2crystal",
+            "crystalBeds": 1,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "dropItems": [
+                "prim",
+                "ramshackle"
+            ],
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump",
+                "miner"
+            ],
+            "name": "Spider Tower 2",
+            "numDedis": 4,
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
+            "seedBedPrefix": "t2seed",
+            "seedBeds": 28,
+            "sideVaults": true,
+            "singlePlayer": false,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 1,
             "turnDirection": "360"
         }
     ]

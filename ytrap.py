@@ -26,6 +26,7 @@ beds = {}
 
 
 lapCounter = 0
+seedLapCounter = 0
 
 ark.setParams(1.45, 1.45, 10)
 statusText = ""
@@ -167,7 +168,9 @@ def dropGen2Suit(popcorn = False):
 
 
 def loadGacha():
-    if(beds["aberrationMode"] == False):
+    global seedLapCounter
+    
+    if((beds["aberrationMode"] == False) and (seedLapCounter == 0)):
         for i in range(6):
             if(ark.openInventory() == True):
                 break
@@ -177,6 +180,7 @@ def loadGacha():
         ark.searchStructureStacks("pellet")
         if(beds["turnDirection"] == "360"):
             ark.tTransferFrom(10)
+            #ark.takeAll("pellet")
         else:
             ark.tTransferFrom(7)
         ark.closeInventory()
@@ -190,7 +194,7 @@ def loadGacha():
         ark.lookDown()
 
         ark.step('right', 1.0)
-        ark.harvestCropStack("trap")
+        ark.harvestCropStack("trap", 1.2)
         pyautogui.press('c')
 
         ark.lookUp()
@@ -216,7 +220,7 @@ def loadGacha():
     
         ark.lookDown()
         ark.step('up', 0.1)
-        ark.harvestCropStack("trap")
+        ark.harvestCropStack("trap", 1.2)
         pyautogui.press('c')
         if(beds["turnDirection"] == "left"):
             ark.step('right', 2.0)
@@ -337,6 +341,7 @@ def whipCrystals():
     
         count = 0
         while(checkWeGotRowOfCrystals()):
+            """
             pyautogui.moveTo(167, 280)
             pyautogui.click()
             for i in range(6):
@@ -345,15 +350,26 @@ def whipCrystals():
     
             ark.sleep(0.8)
             count += 6
+            """
+            ark.crystalHotBarUse()
+            ark.sleep(0.3)
     
         pyautogui.moveTo(165, 280)
         pyautogui.click()
         while(checkWeGotCrystals()):
+            """
             pyautogui.press('e')
             ark.sleep(0.2)
             count += 1
             if(count > 300):
                 break
+            """
+            ark.crystalHotBarUse()
+            ark.sleep(0.3)
+
+        ark.crystalHotBarUse()
+        ark.crystalHotBarUse()
+
         ark.closeInventory()
     
         pyautogui.press('c')
@@ -428,6 +444,7 @@ def stop():
 def start(b):
     global beds
     global lapCounter
+    global seedLapCounter
 
     beds = b
     ark.pause(False)
@@ -452,6 +469,8 @@ def start(b):
                         if(beds["dropGen2Suits"]):
                             dropGen2Suit(False)
                         ark.sleep(20)
+                        while(ark.getBedScreenCoords() == None):
+                            ark.sleep(5)
 
                 setStatusText("Seeding at gachaseed" + str(i).zfill(2))
 
@@ -464,6 +483,8 @@ def start(b):
                 ark.step('s', 0.3)
                 while(ark.accessBed() == False):
                     ark.sleep(10)
+                
+            seedLapCounter += 1
 
             time.sleep(0.1)
     except:
