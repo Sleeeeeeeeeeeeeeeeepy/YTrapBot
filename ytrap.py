@@ -28,6 +28,9 @@ beds = {}
 lapCounter = 0
 seedLapCounter = 0
 
+fillCropsInterval = 43200
+fillCropsLastFilled = 0
+fillCropsLap = 0
 tribeLogOpenInterval = 300
 tribeLogLastOpened = 0
 
@@ -172,21 +175,31 @@ def dropGen2Suit(popcorn = False):
 
 def loadGacha():
     global seedLapCounter
+    global fillCropsInterval
+    global fillCropsLastFilled
+    global fillCropsLap
     
-    if((beds["aberrationMode"] == False) and (seedLapCounter == 0)):
-        for i in range(6):
-            if(ark.openInventory() == True):
-                break
-        if(ark.inventoryIsOpen() == False):
-            return
-        
-        ark.searchStructureStacks("pellet")
-        if(beds["turnDirection"] == "360"):
-            ark.tTransferFrom(10)
-            #ark.takeAll("pellet")
-        else:
-            ark.tTransferFrom(7)
-        ark.closeInventory()
+    if((beds["aberrationMode"] == False)):
+        fillCropsTimeSinceFilled = time.time() - fillCropsLastFilled
+        if(fillCropsTimeSinceFilled > fillCropsInterval):
+            fillCropsLap = seedLapCounter
+            fillCropsLastFilled = time.time()
+
+        if(seedLapCounter == fillCropsLap):
+            for i in range(6):
+                if(ark.openInventory() == True):
+                    break
+            if(ark.inventoryIsOpen() == False):
+                return
+            
+            ark.takeAll("pellet")
+            ark.searchMyStacks("pellet")
+            if(beds["turnDirection"] == "360"):
+                ark.tTransferTo(5)
+                #ark.takeAll("pellet")
+            else:
+                ark.tTransferTo(3)
+            ark.closeInventory()
 
     if(beds["turnDirection"] == "360"):
         ark.step('right', 1.0)
