@@ -357,6 +357,7 @@ def takeAll(thing = ""):
         pyautogui.typewrite(thing, interval=0.01)
     pyautogui.moveTo(1424, 190)
     pyautogui.click()
+    sleep(0.5)
 
 def transferAll(thing = ""):# {{{
     checkTerminated()

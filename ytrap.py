@@ -232,6 +232,7 @@ def loadGacha():
 
     for i in range(10):
         if(ark.openInventory() == True):
+            ark.takeAll("pellet")
             ark.transferAll("trap")
             ark.transferAll()
             ark.dropItems("")
