@@ -28,6 +28,9 @@ beds = {}
 lapCounter = 0
 seedLapCounter = 0
 
+tribeLogOpenInterval = 300
+tribeLogLastOpened = 0
+
 ark.setParams(1.45, 1.45, 10)
 statusText = ""
 
@@ -431,10 +434,16 @@ def whipCrystals():
             ark.sleep(10)
     
 def openTribeLog():
+    global tribeLogOpenInterval
+    global tribeLogLastOpened
+
     if(beds["openTribeLog"]):
-        ark.openTribeLog()
-        ark.sleep(6)
-        ark.closeTribeLog()
+        tribeLogTimeSinceOpened = time.time() - tribeLogLastOpened
+        if(tribeLogTimeSinceOpened > tribeLogOpenInterval):
+            ark.openTribeLog()
+            ark.sleep(6)
+            ark.closeTribeLog()
+            tribeLogLastOpened = time.time()
             
 def getStatus():
     return statusText
