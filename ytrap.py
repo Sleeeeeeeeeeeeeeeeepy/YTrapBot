@@ -454,8 +454,9 @@ def openTribeLog():
         tribeLogTimeSinceOpened = time.time() - tribeLogLastOpened
         if(tribeLogTimeSinceOpened > tribeLogOpenInterval):
             ark.openTribeLog()
-            ark.sleep(6)
+            ark.sleep(4)
             ark.closeTribeLog()
+            ark.sleep(2)
             tribeLogLastOpened = time.time()
             
 def getStatus():
