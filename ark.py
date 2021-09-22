@@ -289,8 +289,7 @@ def openTribeLog():
 def closeTribeLog():
     checkTerminated()
     while(tribelogIsOpen() == True):
-        pyautogui.moveTo(1816, 37)
-        pyautogui.click()
+        pyautogui.press('escape')
         count = 0
         while(inventoryIsOpen()):
             count += 1
