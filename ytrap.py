@@ -442,7 +442,7 @@ def whipCrystals():
             ark.lookDown()
         if(beds["dropGen2Suits"]):
             dropGen2Suit(False)
-        ark.step('s', 0.4)
+        pyautogui.press('x')
         while(ark.accessBed() == False):
             ark.sleep(10)
     
@@ -503,8 +503,8 @@ def start(b):
                 loadGacha()
                 if(beds["dropGen2Suits"]):
                     dropGen2Suit(False)
+                pyautogui.press('x')
                 ark.lookDown()
-                ark.step('s', 0.3)
                 while(ark.accessBed() == False):
                     ark.sleep(10)
                 
