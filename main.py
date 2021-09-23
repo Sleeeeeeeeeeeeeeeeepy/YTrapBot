@@ -47,9 +47,6 @@ def onKeyPress(key):
             ytrap.setStatusText("Paused")
         else:
             ytrap.setStatusText("Resumed")
-    if(key == Key.f4):
-        ytrap.restart()
-        ytrap.setStatusText("Restarting")
 
 
 def onKeyRelease(key):

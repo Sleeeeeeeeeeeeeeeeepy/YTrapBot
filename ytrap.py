@@ -465,28 +465,6 @@ def getStatus():
 def stop():
     ark.terminate(True)
 
-def restart():
-    global beds
-    
-    ark.terminate(True)
-    setStatusText("Restarting. F2 to stop.")
-    
-    if(beds["dropGen2Suits"]):
-        dropGen2Suit(False)
-    ark.lookDown()
-    pyautogui.press('x')
-    while(ark.accessBed() == False):
-        ark.sleep(10)
-    suicideBed = beds["suicideBed"]
-    ark.bedSpawn(suicideBed, beds["bedX"], beds["bedY"])
-    if(beds["dropGen2Suits"]):
-        dropGen2Suit(False)
-    ark.sleep(20)
-    while(ark.getBedScreenCoords() == None):
-        ark.sleep(5)
-
-    ytrap.setStatusText("Ready. Press F1 to start.")
-
 def start(b):
     global beds
     global lapCounter
