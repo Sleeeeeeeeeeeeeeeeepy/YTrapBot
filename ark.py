@@ -276,7 +276,7 @@ def closeInventory():# {{{
             if(count > 20):
                 break
             sleep(0.1)
-    time.sleep(0.1)
+    time.sleep(0.2)
 
 def openTribeLog():
     checkTerminated()
