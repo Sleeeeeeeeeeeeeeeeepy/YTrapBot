@@ -343,6 +343,13 @@ def whipCrystals():
         else:
             pickupWithFSpam()
 
+        pyautogui.press('c')
+        ark.step('up', 0.9)
+    
+        while(canDeposit() == False):
+            ark.step('w', 0.4)
+            ark.sleep(0.2)
+
         pyautogui.press('i')
         ark.sleep(2.0)
         while(ark.inventoryIsOpen() == False):
@@ -388,13 +395,6 @@ def whipCrystals():
         ark.crystalHotBarUse()
 
         ark.closeInventory()
-    
-        pyautogui.press('c')
-        ark.step('up', 0.9)
-    
-        while(canDeposit() == False):
-            ark.step('w', 0.4)
-            ark.sleep(0.2)
             
         if(beds["numDedis"] == 2):
             depositInDedi()
