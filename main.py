@@ -49,7 +49,6 @@ def onKeyPress(key):
             ytrap.setStatusText("Resumed")
 
 
-
 def onKeyRelease(key):
     pass
     

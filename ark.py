@@ -276,7 +276,7 @@ def closeInventory():# {{{
             if(count > 20):
                 break
             sleep(0.1)
-    time.sleep(0.1)
+    time.sleep(0.2)
 
 def openTribeLog():
     checkTerminated()
@@ -289,14 +289,13 @@ def openTribeLog():
 def closeTribeLog():
     checkTerminated()
     while(tribelogIsOpen() == True):
-        pyautogui.moveTo(1816, 37)
-        pyautogui.click()
+        pyautogui.press('escape')
         count = 0
-        while(inventoryIsOpen()):
+        while(tribelogIsOpen()):
             count += 1
             if(count > 20):
                 break
-            sleep(0.1)
+            sleep(0.2)
         
 #crafts an item in a remote inventory (not the player inventory)
 def craft(item, timesToPressA):
@@ -357,6 +356,7 @@ def takeAll(thing = ""):
         pyautogui.typewrite(thing, interval=0.01)
     pyautogui.moveTo(1424, 190)
     pyautogui.click()
+    sleep(0.5)
 
 def transferAll(thing = ""):# {{{
     checkTerminated()

@@ -28,6 +28,12 @@ beds = {}
 lapCounter = 0
 seedLapCounter = 0
 
+fillCropsInterval = 43200
+fillCropsLastFilled = 0
+fillCropsLap = 0
+tribeLogOpenInterval = 300
+tribeLogLastOpened = 0
+
 ark.setParams(1.45, 1.45, 10)
 statusText = ""
 
@@ -169,21 +175,31 @@ def dropGen2Suit(popcorn = False):
 
 def loadGacha():
     global seedLapCounter
+    global fillCropsInterval
+    global fillCropsLastFilled
+    global fillCropsLap
     
-    if((beds["aberrationMode"] == False) and (seedLapCounter == 0)):
-        for i in range(6):
-            if(ark.openInventory() == True):
-                break
-        if(ark.inventoryIsOpen() == False):
-            return
-        
-        ark.searchStructureStacks("pellet")
-        if(beds["turnDirection"] == "360"):
-            ark.tTransferFrom(10)
-            #ark.takeAll("pellet")
-        else:
-            ark.tTransferFrom(7)
-        ark.closeInventory()
+    if((beds["aberrationMode"] == False)):
+        fillCropsTimeSinceFilled = time.time() - fillCropsLastFilled
+        if(fillCropsTimeSinceFilled > fillCropsInterval):
+            fillCropsLap = seedLapCounter
+            fillCropsLastFilled = time.time()
+
+        if(seedLapCounter == fillCropsLap):
+            for i in range(6):
+                if(ark.openInventory() == True):
+                    break
+            if(ark.inventoryIsOpen() == False):
+                return
+            
+            ark.takeAll("pellet")
+            ark.searchMyStacks("pellet")
+            if(beds["turnDirection"] == "360"):
+                ark.tTransferTo(5)
+                #ark.takeAll("pellet")
+            else:
+                ark.tTransferTo(3)
+            ark.closeInventory()
 
     if(beds["turnDirection"] == "360"):
         ark.step('right', 1.0)
@@ -232,6 +248,7 @@ def loadGacha():
 
     for i in range(10):
         if(ark.openInventory() == True):
+            ark.takeAll("pellet")
             ark.transferAll("trap")
             ark.transferAll()
             ark.dropItems("")
@@ -326,6 +343,19 @@ def whipCrystals():
         else:
             pickupWithFSpam()
 
+        pyautogui.press('c')
+        ark.step('up', 0.9)
+    
+        while(canDeposit() == False):
+            ark.step('w', 0.4)
+            ark.sleep(0.2)
+        
+        ark.sleep(2)
+
+        while(canDeposit() == False):
+            ark.step('w', 0.4)
+            ark.sleep(0.2)
+
         pyautogui.press('i')
         ark.sleep(2.0)
         while(ark.inventoryIsOpen() == False):
@@ -371,13 +401,6 @@ def whipCrystals():
         ark.crystalHotBarUse()
 
         ark.closeInventory()
-    
-        pyautogui.press('c')
-        ark.step('up', 0.9)
-    
-        while(canDeposit() == False):
-            ark.step('w', 0.4)
-            ark.sleep(0.2)
             
         if(beds["numDedis"] == 2):
             depositInDedi()
@@ -425,15 +448,22 @@ def whipCrystals():
             ark.lookDown()
         if(beds["dropGen2Suits"]):
             dropGen2Suit(False)
-        ark.step('s', 0.4)
+        pyautogui.press('x')
         while(ark.accessBed() == False):
             ark.sleep(10)
     
 def openTribeLog():
+    global tribeLogOpenInterval
+    global tribeLogLastOpened
+
     if(beds["openTribeLog"]):
-        ark.openTribeLog()
-        ark.sleep(6)
-        ark.closeTribeLog()
+        tribeLogTimeSinceOpened = time.time() - tribeLogLastOpened
+        if(tribeLogTimeSinceOpened > tribeLogOpenInterval):
+            ark.openTribeLog()
+            ark.sleep(4)
+            ark.closeTribeLog()
+            ark.sleep(2)
+            tribeLogLastOpened = time.time()
             
 def getStatus():
     return statusText
@@ -480,7 +510,7 @@ def start(b):
                 if(beds["dropGen2Suits"]):
                     dropGen2Suit(False)
                 ark.lookDown()
-                ark.step('s', 0.3)
+                pyautogui.press('x')
                 while(ark.accessBed() == False):
                     ark.sleep(10)
                 
