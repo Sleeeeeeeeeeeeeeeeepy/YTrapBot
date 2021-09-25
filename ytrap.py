@@ -350,7 +350,7 @@ def whipCrystals():
             ark.step('w', 0.4)
             ark.sleep(0.2)
         
-        ark.sleep(2)
+        ark.sleep(5)
 
         while(canDeposit() == False):
             ark.step('w', 0.4)
