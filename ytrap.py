@@ -31,7 +31,7 @@ seedLapCounter = 0
 fillCropsInterval = 43200
 fillCropsLastFilled = 0
 fillCropsLap = 0
-tribeLogOpenInterval = 300
+tribeLogOpenInterval = 0
 tribeLogLastOpened = 0
 
 ark.setParams(1.45, 1.45, 10)
@@ -475,8 +475,10 @@ def start(b):
     global beds
     global lapCounter
     global seedLapCounter
+    global tribeLogOpenInterval
 
     beds = b
+    tribeLogOpenInterval = beds["showLogInterval"]
     ark.pause(False)
     ark.terminate(False)
     setStatusText("Starting. F2 to stop. Alt tab back into the game NOW.")

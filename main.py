@@ -134,6 +134,10 @@ def fillUI():
                 sideVaultVar.set(i["sideVaults"])
 
                 showLogVar.set(i["openTribeLog"])
+                
+                showLogIntervalEntry.delete(0, tk.END)
+                showLogIntervalEntry.insert(0, str(i["showLogInterval"]))
+                
                 singlePlayerVar.set(i["singlePlayer"])
             
                 fillingUI = False
@@ -276,6 +280,8 @@ def onEntryChanged(*args):
             loc["openTribeLog"] = False
         else:
             loc["openTribeLog"] = True
+
+        loc["showLogInterval"] = int(showLogIntervalEntry.get())
 
         if(singlePlayerVar.get() == 0):
             loc["singlePlayer"] = False
@@ -489,6 +495,16 @@ showLogCheck.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
 frame = ttk.Frame(r)
 frame.pack(fill=tk.BOTH, expand=True)
+
+label = ttk.Label(frame, text="Tribe log open interval")
+label.pack(side=tk.LEFT)
+
+showLogIntervalSv = tk.StringVar()
+showLogIntervalEntry = ttk.Entry(frame, textvariable=showLogIntervalSv)
+showLogIntervalEntry.pack(side=tk.LEFT)
+
+frame = ttk.Frame(r)
+frame.pack(fill=tk.BOTH, expand=True)
 statusLabel = ttk.Label(frame, text="Press F1 to start the bot")
 statusLabel.pack(side=tk.LEFT, fill=tk.BOTH)
 
@@ -513,6 +529,7 @@ crystalPrefixSv.trace_add("write", onEntryChanged)
 seedPrefixSv.trace_add("write", onEntryChanged)
 sideVaultVar.trace_add("write", onEntryChanged)
 showLogVar.trace_add("write", onEntryChanged)
+showLogIntervalSv.trace_add("write", onEntryChanged)
 singlePlayerVar.trace_add("write", onEntryChanged)
 
 updateStatus()
