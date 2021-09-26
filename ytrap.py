@@ -355,7 +355,8 @@ def whipCrystals():
         while(canDeposit() == False):
             ark.step('w', 0.4)
             ark.sleep(0.2)
-
+        ark.step('w', 0.4)
+        
         pyautogui.press('i')
         ark.sleep(2.0)
         while(ark.inventoryIsOpen() == False):
