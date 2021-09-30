@@ -48,7 +48,7 @@ def disableToolTips():
     roi = screen.getScreen()[164:210,623:668]
     gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
 
-    res = cv2.matchTemplate(gray_roi, crystal_template, cv2.TM_CCOEFF)
+    res = cv2.matchTemplate(gray_roi, tooltips_template, cv2.TM_CCOEFF)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 
     if(max_val > 4000000):
