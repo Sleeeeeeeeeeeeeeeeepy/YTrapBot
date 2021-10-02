@@ -501,9 +501,8 @@ def start(b):
                         ark.bedSpawn(suicideBed, beds["bedX"], beds["bedY"])
                         if(beds["dropGen2Suits"]):
                             dropGen2Suit(False)
-                        ark.sleep(20)
                         while(ark.getBedScreenCoords() == None):
-                            ark.sleep(5)
+                            ark.sleep(0.5)
 
                 setStatusText("Seeding at gachaseed" + str(i).zfill(2))
 
