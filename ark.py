@@ -395,14 +395,14 @@ def transferStacks(thing, count):# {{{
 def openInventory(retries = 20):
     checkTerminated()
     pyautogui.press('f')
+    sleep(0.2)
     count = 0
     while(inventoryIsOpen() == False):
           count += 1
           if(count > retries):
               return False
-          sleep(0.1)
     while(receivingRemoteInventory()):
-        time.sleep(0.5)
+        time.sleep(0.2)
 
     return True
 

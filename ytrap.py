@@ -192,13 +192,12 @@ def loadGacha():
             if(ark.inventoryIsOpen() == False):
                 return
             
-            ark.takeAll("pellet")
-            ark.searchMyStacks("pellet")
+            ark.takeAll("ll")
+            ark.searchMyStacks("ll")
             if(beds["turnDirection"] == "360"):
-                ark.tTransferTo(5)
-                #ark.takeAll("pellet")
+                ark.tTransferTo(10)
             else:
-                ark.tTransferTo(3)
+                ark.tTransferTo(5)
             ark.closeInventory()
 
     if(beds["turnDirection"] == "360"):
@@ -248,7 +247,7 @@ def loadGacha():
 
     for i in range(10):
         if(ark.openInventory() == True):
-            ark.takeAll("pellet")
+            ark.takeAll("ll")
             ark.transferAll("trap")
             ark.transferAll()
             ark.dropItems("")
