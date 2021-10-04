@@ -398,11 +398,12 @@ def openInventory(retries = 20):
     sleep(0.2)
     count = 0
     while(inventoryIsOpen() == False):
-          count += 1
-          if(count > retries):
-              return False
+        count += 1
+        if(count > retries):
+            return False
+        sleep(0.1)
     while(receivingRemoteInventory()):
-        time.sleep(0.2)
+        time.sleep(0.5)
 
     return True
 
